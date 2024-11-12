@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ - Dating Web</title>
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/profile.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="home.html">Dating Web</a>
+        </div>
+        <div class="nav-links">
+            <a href="matching.html">Ghép cặp</a>
+            <a href="chat.html">Tin nhắn</a>
+            <a href="match-management.html">Quản lý bạn bè</a>
+            <a href="notifications.html">Thông báo</a>
+            <a href="settings.html">Cài đặt</a>
+            <a href="#" id="logoutBtn">Đăng xuất</a>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="avatar-container">
+                <img id="userAvatar" src="../images/default-avatar.png" alt="Avatar">
+            </div>
+            <h1 id="userName">Tên người dùng</h1>
+            <p id="userLocation">Địa điểm</p>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-section">
+                <h2>Thông tin cơ bản</h2>
+                <p>Tuổi: <span id="userAge"></span></p>
+                <p>Giới tính: <span id="userGender"></span></p>
+                <p>Nghề nghiệp: <span id="userOccupation"></span></p>
+            </div>
+
+            <div class="profile-section">
+                <h2>Sở thích</h2>
+                <div id="userInterests" class="tags-container"></div>
+            </div>
+
+            <div class="profile-section">
+                <h2>Phong cách sống</h2>
+                <div id="userLifestyle" class="tags-container"></div>
+            </div>
+
+            <div class="profile-section">
+                <h2>Mục tiêu</h2>
+                <div id="userGoals" class="tags-container"></div>
+            </div>
+
+            <div class="profile-section">
+                <h2>Giá trị sống</h2>
+                <div id="userValues" class="tags-container"></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../js/constants.js"></script>
+<script src="../js/profile.js"></script>
+<script>
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = 'login.html';
+});
+</script>
+</html> 

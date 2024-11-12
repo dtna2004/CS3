@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt - Dating Web</title>
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/settings.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="home.html">Dating Web</a>
+        </div>
+        <div class="nav-links">
+            <a href="profile.html">Hồ sơ</a>
+            <a href="matching.html">Ghép cặp</a>
+            <a href="chat.html">Tin nhắn</a>
+            <a href="match-management.html">Quản lý bạn bè</a>
+            <a href="notifications.html">Thông báo</a>
+            <a href="#" id="logoutBtn">Đăng xuất</a>
+        </div>
+    </nav>
+
+    <div class="settings-container">
+        <h1>Cập nhật thông tin</h1>
+        <form id="settingsForm">
+            <div class="form-section">
+                <h2>Thông tin cơ bản</h2>
+                <div class="avatar-upload">
+                    <img id="avatarPreview" src="../images/default-avatar.png" alt="Avatar">
+                    <input type="file" id="avatarInput" accept="image/*">
+                    <button type="button" id="uploadAvatarBtn">Thay đổi ảnh</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="name">Họ tên</label>
+                    <input type="text" id="name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">Tuổi</label>
+                    <input type="number" id="age" min="18">
+                </div>
+                
+                <div class="form-group">
+                    <label for="gender">Giới tính</label>
+                    <select id="gender">
+                        <option value="male">Nam</option>
+                        <option value="female">Nữ</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="occupation">Nghề nghiệp</label>
+                    <select id="occupation">
+                        <!-- Options will be added by JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Sở thích</h2>
+                <div id="interestsContainer" class="checkbox-container">
+                    <!-- Checkboxes will be added by JavaScript -->
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Phong cách sống</h2>
+                <div id="lifestyleContainer" class="checkbox-container">
+                    <!-- Checkboxes will be added by JavaScript -->
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Mục tiêu</h2>
+                <div id="goalsContainer" class="checkbox-container">
+                    <!-- Checkboxes will be added by JavaScript -->
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Giá trị sống</h2>
+                <div id="valuesContainer" class="checkbox-container">
+                    <!-- Checkboxes will be added by JavaScript -->
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary">Lưu thay đổi</button>
+        </form>
+    </div>
+</body>
+<script src="../js/constants.js"></script>
+<script src="../js/settings.js"></script>
+<script>
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = 'login.html';
+});
+</script>
+</html> 

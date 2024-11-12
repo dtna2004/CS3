@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông báo - Dating Web</title>
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/notifications.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="home.html">Dating Web</a>
+        </div>
+        <div class="nav-links">
+            <a href="profile.html">Hồ sơ</a>
+            <a href="matching.html">Ghép cặp</a>
+            <a href="chat.html">Tin nhắn</a>
+            <a href="match-management.html">Quản lý bạn bè</a>
+            <a href="settings.html">Cài đặt</a>
+            <a href="#" id="logoutBtn">Đăng xuất</a>
+        </div>
+    </nav>
+
+    <div class="notifications-container">
+        <h1>Thông báo</h1>
+        <div class="notifications-tabs">
+            <button class="tab-btn active" data-tab="matchRequests">Lời mời kết nối</button>
+            <button class="tab-btn" data-tab="systemNotifications">Thông báo hệ thống</button>
+        </div>
+        <div id="matchRequests" class="tab-content active">
+            <div id="matchRequestsList" class="notifications-list"></div>
+        </div>
+        <div id="systemNotifications" class="tab-content">
+            <div id="systemNotificationsList" class="notifications-list"></div>
+        </div>
+    </div>
+</body>
+<script src="../js/constants.js"></script>
+<script src="../js/notifications.js"></script>
+<script>
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        window.location.href = 'login.html';
+    });
+</script>
+</html> 

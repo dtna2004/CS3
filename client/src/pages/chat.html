@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin nhắn - Dating Web</title>
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/chat.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="home.html">Dating Web</a>
+        </div>
+        <div class="nav-links">
+            <a href="profile.html">Hồ sơ</a>
+            <a href="matching.html">Ghép cặp</a>
+            <a href="match-management.html">Quản lý bạn bè</a>
+            <a href="notifications.html">Thông báo</a>
+            <a href="settings.html">Cài đặt</a>
+            <a href="#" id="logoutBtn">Đăng xuất</a>
+        </div>
+    </nav>
+
+    <div class="chat-container">
+        <div class="chat-list">
+            <div class="chat-list-header">
+                <h2>Tin nhắn</h2>
+            </div>
+            <div id="chatUsersList"></div>
+        </div>
+        <div class="chat-messages">
+            <div id="messageHeader" class="message-header">
+                <img src="../images/default-avatar.png" alt="Avatar" id="chatUserAvatar">
+                <h3 id="chatUserName">Chọn người để chat</h3>
+            </div>
+            <div id="messagesContainer" class="messages-container"></div>
+            <div class="message-input">
+                <input type="text" id="messageInput" placeholder="Nhập tin nhắn...">
+                <button id="sendMessageBtn">Gửi</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../js/constants.js"></script>
+<script src="../js/chat.js"></script>
+<script>
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    window.location.href = 'login.html';
+});
+</script>
+</html> 

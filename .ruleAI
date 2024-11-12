@@ -1,0 +1,53 @@
+Always respond in VietNamese
+must write the full file, if it is too long, write it next time, no comments
+constants must be in a separate file for easy maintenance
+api must be in .env
+Project structure
+dating-web/
+├── client/
+│   ├── public/
+│   │   └── images/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── home.html
+│   │   │   ├── login.html
+│   │   │   ├── register.html
+│   │   │   ├── profile.html
+│   │   │   ├── settings.html
+│   │   │   ├── matching.html
+│   │   │   ├── chat.html
+│   │   │   └── match-management.html
+│   │   ├── styles/
+│   │   │   ├── common.css
+│   │   │   ├── home.css
+│   │   │   ├── auth.css
+│   │   │   ├── profile.css
+│   │   │   ├── matching.css
+│   │   │   └── chat.css
+│   │   ├── js/
+│   │   │   ├── constants.js
+│   │   │   ├── api.js
+│   │   │   ├── auth.js
+│   │   │   ├── profile.js
+│   │   │   ├── matching.js
+│   │   │   ├── chat.js
+│   │   │   └── utils.js
+│   │   └
+└── server/
+    ├── config/
+    │   ├── database.js
+    │   └── constants.js
+    ├── controllers/
+    ├── middleware/
+    ├── models/
+    ├── routes/
+    ├── utils/
+    ├── .env
+    |── server.js
+    └──package.json
+
+When creating a new page, write html for the page, css for the page, js for the page on the client, and server write routes, controllers, models, middleware, utils, config, server.js and .env. Update old files if necessary.
+I need to make a beautiful dating website, with many functions such as registration, login, logout, matchmaking (based on age, gender, geographic distance, interests and weights for each field and then calculate points), messaging. I want to write as follows: html for the page, css for the page, js for the page on the client, and the server writes routes, controllers, models, middleware, server.js and .env. User information fields will include name, age, interests (create a menu for users to choose), gender, location (use opencage api to get location), I want the website to have the following pages: introduction, registration, login, profile (only display user information), settings (edit user information), matchmaking (based on scores to show suitable people for dating, integrating AI to analyze user data based on Age difference, Interest similarity, Same career group, Geographic distance, Lifestyle compatibility, Goal compatibility, Life value compatibility), messaging (messaging with successfully matched people), match management (add, delete, block matched people)
+The matching algorithm is as follows:
+create matrices that are the difference of the compatibility between occupations, interests, lifestyles, goals, values, and sexual orientations.
+there will be a fixed weight for each group (total of 8 weights for distance, age, occupation, interests, lifestyles, goals, values, and sexual orientation). Just take the weights and matrices randomly.

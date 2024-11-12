@@ -15,56 +15,135 @@ const COMPATIBILITY_MATRICES = {
             'Kỹ sư phần mềm': 1.0,
             'Nhà phát triển web': 0.9,
             'Nhà phân tích dữ liệu': 0.8,
-            'Kỹ thuật viên điện tử': 0.7
+            'Kỹ thuật viên điện tử': 0.7,
+            'Chuyên viên marketing': 0.5
         },
         'Bác sĩ': {
             'Bác sĩ': 1.0,
             'Giáo viên': 0.6,
-            'Luật sư': 0.5
+            'Luật sư': 0.5,
+            'Nhà báo': 0.4
         },
         'Giáo viên': {
             'Giáo viên': 1.0,
             'Bác sĩ': 0.6,
-            'Nhà báo': 0.5
+            'Nhà báo': 0.5,
+            'Nghệ sĩ': 0.7
+        },
+        'Luật sư': {
+            'Luật sư': 1.0,
+            'Bác sĩ': 0.5,
+            'Nhà báo': 0.6,
+            'Chuyên viên tuyển dụng': 0.7
+        },
+        'Kiến trúc sư': {
+            'Kiến trúc sư': 1.0,
+            'Nhà thiết kế đồ họa': 0.8,
+            'Kỹ sư xây dựng': 0.9,
+            'Nghệ sĩ': 0.7
         }
     },
     interests: {
         'Đọc sách': {
             'Viết lách': 0.9,
-            'Học ngoại ngữ': 0.7
+            'Học ngoại ngữ': 0.7,
+            'Nghệ thuật': 0.6
+        },
+        'Chơi nhạc cụ': {
+            'Nghệ thuật': 0.9,
+            'Ca hát': 0.8,
+            'Nhảy múa': 0.7
         },
         'Chơi thể thao': {
             'Chạy bộ hoặc tập gym': 0.9,
-            'Du lịch khám phá': 0.6
+            'Du lịch khám phá': 0.6,
+            'Yoga': 0.7
+        },
+        'Nấu ăn': {
+            'Làm vườn': 0.6,
+            'Du lịch khám phá': 0.5,
+            'Nhiếp ảnh': 0.4
+        },
+        'Du lịch khám phá': {
+            'Nhiếp ảnh': 0.8,
+            'Học ngoại ngữ': 0.7,
+            'Văn hóa': 0.9
         }
     },
     lifestyle: {
         'Sống tối giản': {
             'Sống bền vững': 0.8,
-            'Sống khỏe mạnh': 0.7
+            'Sống khỏe mạnh': 0.7,
+            'Sống hòa hợp': 0.6
         },
         'Sống năng động': {
             'Sống phiêu lưu': 0.9,
-            'Sống hướng ngoại': 0.8
+            'Sống hướng ngoại': 0.8,
+            'Sống khỏe mạnh': 0.7
+        },
+        'Sống tự do du mục': {
+            'Sống phiêu lưu': 0.8,
+            'Du lịch': 0.9,
+            'Sống tự do': 0.9
+        },
+        'Sống hướng nội': {
+            'Sống tối giản': 0.7,
+            'Sống hòa hợp': 0.8,
+            'Sống nghệ thuật': 0.6
+        },
+        'Sống vì cộng đồng': {
+            'Sống bền vững': 0.8,
+            'Sống hòa hợp': 0.9,
+            'Sống gia đình': 0.7
         }
     },
     goals: {
         'Phát triển sự nghiệp vững chắc': {
             'Tự do tài chính': 0.8,
-            'Khởi nghiệp và phát triển công ty riêng': 0.7
+            'Khởi nghiệp và phát triển công ty riêng': 0.7,
+            'Thăng tiến lên vị trí lãnh đạo': 0.9
         },
         'Xây dựng gia đình hạnh phúc': {
-            'Tìm kiếm và duy trì các mối quan hệ chất lượng': 0.9
+            'Tìm kiếm và duy trì các mối quan hệ chất lượng': 0.9,
+            'Sở hữu ngôi nhà riêng': 0.7,
+            'Sống vì gia đình': 0.8
+        },
+        'Khám phá thế giới': {
+            'Du lịch': 0.9,
+            'Học hỏi văn hóa': 0.8,
+            'Phát triển bản thân': 0.7
+        },
+        'Đóng góp xã hội': {
+            'Công tác từ thiện': 0.9,
+            'Phát triển cộng đồng': 0.8,
+            'Bảo vệ môi trường': 0.7
         }
     },
     values: {
         'Trung thực': {
             'Tính chính trực': 0.9,
-            'Trách nhiệm': 0.8
+            'Trách nhiệm': 0.8,
+            'Đạo đức': 0.9
         },
         'Tự do': {
             'Độc lập': 0.9,
+            'Sáng tạo': 0.7,
+            'Phiêu lưu': 0.6
+        },
+        'Gia đình': {
+            'Tình yêu thương': 0.9,
+            'Trách nhiệm': 0.8,
+            'Lòng hiếu thảo': 0.9
+        },
+        'Thành công': {
+            'Tham vọng': 0.8,
+            'Nỗ lực': 0.9,
             'Sáng tạo': 0.7
+        },
+        'Hòa bình': {
+            'Cảm thông': 0.8,
+            'Lòng vị tha': 0.9,
+            'Công bằng': 0.7
         }
     }
 };

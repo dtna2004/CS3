@@ -5,7 +5,11 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   name: { type: String },
   age: { type: Number },
-  gender: { type: String },
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other'],
+    required: true
+  },
   avatar: { type: String },
   occupation: { type: String },
   interests: [String],
@@ -16,6 +20,10 @@ const userSchema = new mongoose.Schema({
     lat: Number,
     lng: Number,
     address: String
+  },
+  preferredGender: {
+    type: String,
+    enum: ['male', 'female', 'other']
   },
   createdAt: { type: Date, default: Date.now }
 });

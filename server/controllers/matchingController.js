@@ -9,13 +9,11 @@ exports.getPotentialMatches = async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy thông tin người dùng' });
         }
 
-        // Lấy danh sách người dùng phù hợp với giới tính ưa thích
         const allUsers = await User.find({
-            _id: { $ne: req.userId }, // Không lấy chính mình
-            gender: currentUser.preferredGender || { $ne: currentUser.gender } // Nếu không có preferredGender thì lấy giới tính khác
+            _id: { $ne: req.userId },
+            gender: currentUser.preferredGender || { $ne: currentUser.gender }
         });
 
-        // Lấy danh sách người đã match hoặc đã gửi yêu cầu
         const existingMatches = await Match.find({
             $or: [
                 { sender: req.userId },
@@ -27,9 +25,13 @@ exports.getPotentialMatches = async (req, res) => {
             match.sender.toString() === req.userId ? match.receiver.toString() : match.sender.toString()
         );
 
-        // Lọc ra những người chưa match
         const potentialMatches = allUsers
             .filter(user => !matchedUserIds.includes(user._id.toString()))
+            .filter(user => 
+                user.name && 
+                user.interests && 
+                user.interests.length > 0
+            )
             .map(user => {
                 const score = calculateMatchScore(currentUser, user);
                 return {
@@ -49,10 +51,8 @@ exports.getPotentialMatches = async (req, res) => {
                 };
             });
 
-        // Sắp xếp theo điểm số từ cao xuống thấp
         potentialMatches.sort((a, b) => b.score - a.score);
 
-        // Trả về 10 người phù hợp nhất
         res.json(potentialMatches.slice(0, 10));
     } catch (error) {
         console.error('Matching error:', error);

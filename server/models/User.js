@@ -18,8 +18,7 @@ const userSchema = new mongoose.Schema({
   values: [String],
   location: {
     lat: Number,
-    lng: Number,
-    address: String
+    lng: Number
   },
   preferredGender: {
     type: String,

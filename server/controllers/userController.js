@@ -66,4 +66,18 @@ exports.getUserProfile = async (req, res) => {
         console.error('Get user profile error:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
+};
+
+exports.updateLocation = async (req, res) => {
+    try {
+        const { location } = req.body;
+        const user = await User.findByIdAndUpdate(
+            req.userId,
+            { location },
+            { new: true }
+        );
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
 }; 

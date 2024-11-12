@@ -67,4 +67,23 @@ exports.getUnreadCount = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
     }
+};
+
+exports.getLastMessage = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        const lastMessage = await Message.findOne({
+            $or: [
+                { sender: req.userId, receiver: userId },
+                { sender: userId, receiver: req.userId }
+            ]
+        })
+        .sort({ createdAt: -1 })
+        .limit(1);
+
+        res.json(lastMessage);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
 }; 

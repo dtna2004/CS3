@@ -1,155 +1,113 @@
 const WEIGHTS = {
-    distance: 0.2,
+    distance: 0.15,
     age: 0.15,
     occupation: 0.1,
-    interests: 0.15,
+    interests: 0.2,
     lifestyle: 0.15,
-    goals: 0.1,
-    values: 0.1,
-    orientation: 0.05
+    goals: 0.15,
+    values: 0.1
 };
 
 const COMPATIBILITY_MATRICES = {
-    occupation: {
-        'Kỹ sư phần mềm': {
-            'Kỹ sư phần mềm': 1.0,
-            'Nhà phát triển web': 0.9,
-            'Nhà phân tích dữ liệu': 0.8,
-            'Kỹ thuật viên điện tử': 0.7,
-            'Chuyên viên marketing': 0.5
-        },
-        'Bác sĩ': {
-            'Bác sĩ': 1.0,
-            'Giáo viên': 0.6,
-            'Luật sư': 0.5,
-            'Nhà báo': 0.4
-        },
-        'Giáo viên': {
-            'Giáo viên': 1.0,
-            'Bác sĩ': 0.6,
-            'Nhà báo': 0.5,
-            'Nghệ sĩ': 0.7
-        },
-        'Luật sư': {
-            'Luật sư': 1.0,
-            'Bác sĩ': 0.5,
-            'Nhà báo': 0.6,
-            'Chuyên viên tuyển dụng': 0.7
-        },
-        'Kiến trúc sư': {
-            'Kiến trúc sư': 1.0,
-            'Nhà thiết kế đồ họa': 0.8,
-            'Kỹ sư xây dựng': 0.9,
-            'Nghệ sĩ': 0.7
-        }
-    },
-    interests: {
-        'Đọc sách': {
-            'Viết lách': 0.9,
-            'Học ngoại ngữ': 0.7,
-            'Nghệ thuật': 0.6
-        },
-        'Chơi nhạc cụ': {
-            'Nghệ thuật': 0.9,
-            'Ca hát': 0.8,
-            'Nhảy múa': 0.7
-        },
-        'Chơi thể thao': {
-            'Chạy bộ hoặc tập gym': 0.9,
-            'Du lịch khám phá': 0.6,
-            'Yoga': 0.7
-        },
-        'Nấu ăn': {
-            'Làm vườn': 0.6,
-            'Du lịch khám phá': 0.5,
-            'Nhiếp ảnh': 0.4
-        },
-        'Du lịch khám phá': {
-            'Nhiếp ảnh': 0.8,
-            'Học ngoại ngữ': 0.7,
-            'Văn hóa': 0.9
-        }
-    },
-    lifestyle: {
-        'Sống tối giản': {
-            'Sống bền vững': 0.8,
-            'Sống khỏe mạnh': 0.7,
-            'Sống hòa hợp': 0.6
-        },
-        'Sống năng động': {
-            'Sống phiêu lưu': 0.9,
-            'Sống hướng ngoại': 0.8,
-            'Sống khỏe mạnh': 0.7
-        },
-        'Sống tự do du mục': {
-            'Sống phiêu lưu': 0.8,
-            'Du lịch': 0.9,
-            'Sống tự do': 0.9
-        },
-        'Sống hướng nội': {
-            'Sống tối giản': 0.7,
-            'Sống hòa hợp': 0.8,
-            'Sống nghệ thuật': 0.6
-        },
-        'Sống vì cộng đồng': {
-            'Sống bền vững': 0.8,
-            'Sống hòa hợp': 0.9,
-            'Sống gia đình': 0.7
-        }
-    },
-    goals: {
-        'Phát triển sự nghiệp vững chắc': {
-            'Tự do tài chính': 0.8,
-            'Khởi nghiệp và phát triển công ty riêng': 0.7,
-            'Thăng tiến lên vị trí lãnh đạo': 0.9
-        },
-        'Xây dựng gia đình hạnh phúc': {
-            'Tìm kiếm và duy trì các mối quan hệ chất lượng': 0.9,
-            'Sở hữu ngôi nhà riêng': 0.7,
-            'Sống vì gia đình': 0.8
-        },
-        'Khám phá thế giới': {
-            'Du lịch': 0.9,
-            'Học hỏi văn hóa': 0.8,
-            'Phát triển bản thân': 0.7
-        },
-        'Đóng góp xã hội': {
-            'Công tác từ thiện': 0.9,
-            'Phát triển cộng đồng': 0.8,
-            'Bảo vệ môi trường': 0.7
-        }
-    },
-    values: {
-        'Trung thực': {
-            'Tính chính trực': 0.9,
-            'Trách nhiệm': 0.8,
-            'Đạo đức': 0.9
-        },
-        'Tự do': {
-            'Độc lập': 0.9,
-            'Sáng tạo': 0.7,
-            'Phiêu lưu': 0.6
-        },
-        'Gia đình': {
-            'Tình yêu thương': 0.9,
-            'Trách nhiệm': 0.8,
-            'Lòng hiếu thảo': 0.9
-        },
-        'Thành công': {
-            'Tham vọng': 0.8,
-            'Nỗ lực': 0.9,
-            'Sáng tạo': 0.7
-        },
-        'Hòa bình': {
-            'Cảm thông': 0.8,
-            'Lòng vị tha': 0.9,
-            'Công bằng': 0.7
-        }
-    }
+    occupation: [
+        //KSP   Bác   GV    LS    TK    KSX   NB    KT    MKT   Web   TC    TD    KTV   DL    NS
+        [1.0,  0.4,  0.5,  0.4,  0.6,  0.5,  0.4,  0.5,  0.5,  0.9,  0.5,  0.4,  0.7,  0.8,  0.3], // Kỹ sư phần mềm
+        [0.4,  1.0,  0.7,  0.6,  0.3,  0.4,  0.4,  0.4,  0.4,  0.3,  0.5,  0.5,  0.4,  0.5,  0.5], // Bác sĩ
+        [0.5,  0.7,  1.0,  0.6,  0.6,  0.5,  0.7,  0.6,  0.6,  0.5,  0.5,  0.7,  0.5,  0.6,  0.7], // Giáo viên
+        [0.4,  0.6,  0.6,  1.0,  0.4,  0.5,  0.7,  0.5,  0.6,  0.4,  0.7,  0.7,  0.4,  0.5,  0.4], // Luật sư
+        [0.6,  0.3,  0.6,  0.4,  1.0,  0.7,  0.6,  0.8,  0.7,  0.7,  0.4,  0.5,  0.5,  0.5,  0.8], // Thiết kế
+        [0.5,  0.4,  0.5,  0.5,  0.7,  1.0,  0.5,  0.9,  0.5,  0.5,  0.6,  0.4,  0.7,  0.5,  0.6], // Kỹ sư xây dựng
+        [0.4,  0.4,  0.7,  0.7,  0.6,  0.5,  1.0,  0.5,  0.7,  0.4,  0.5,  0.6,  0.4,  0.5,  0.7], // Nhà báo
+        [0.5,  0.4,  0.6,  0.5,  0.8,  0.9,  0.5,  1.0,  0.5,  0.5,  0.5,  0.4,  0.6,  0.5,  0.7], // Kiến trúc sư
+        [0.5,  0.4,  0.6,  0.6,  0.7,  0.5,  0.7,  0.5,  1.0,  0.6,  0.7,  0.8,  0.4,  0.6,  0.6], // Marketing
+        [0.9,  0.3,  0.5,  0.4,  0.7,  0.5,  0.4,  0.5,  0.6,  1.0,  0.5,  0.4,  0.7,  0.8,  0.5], // Web Developer
+        [0.5,  0.5,  0.5,  0.7,  0.4,  0.6,  0.5,  0.5,  0.7,  0.5,  1.0,  0.7,  0.4,  0.7,  0.4], // Tài chính
+        [0.4,  0.5,  0.7,  0.7,  0.5,  0.4,  0.6,  0.4,  0.8,  0.4,  0.7,  1.0,  0.4,  0.5,  0.5], // Tuyển dụng
+        [0.7,  0.4,  0.5,  0.4,  0.5,  0.7,  0.4,  0.6,  0.4,  0.7,  0.4,  0.4,  1.0,  0.7,  0.5], // Kỹ thuật viên
+        [0.8,  0.5,  0.6,  0.5,  0.5,  0.5,  0.5,  0.5,  0.6,  0.8,  0.7,  0.5,  0.7,  1.0,  0.4], // Dữ liệu
+        [0.3,  0.5,  0.7,  0.4,  0.8,  0.6,  0.7,  0.7,  0.6,  0.5,  0.4,  0.5,  0.5,  0.4,  1.0], // Nghệ sĩ
+    ],
+
+    interests: [
+        //Đọc   Nhạc  Vẽ    TT    Nấu   Ảnh   DL    Vườn  Game  Viết  Sưu   Gym   Phim  NN    Yoga
+        [1.0,  0.6,  0.6,  0.3,  0.4,  0.5,  0.6,  0.4,  0.4,  0.9,  0.5,  0.3,  0.7,  0.8,  0.5], // Đọc sách
+        [0.6,  1.0,  0.7,  0.4,  0.3,  0.6,  0.5,  0.3,  0.4,  0.6,  0.6,  0.3,  0.6,  0.6,  0.5], // Nhạc cụ
+        [0.6,  0.7,  1.0,  0.3,  0.4,  0.8,  0.5,  0.4,  0.4,  0.7,  0.6,  0.3,  0.6,  0.5,  0.5], // Vẽ
+        [0.3,  0.4,  0.3,  1.0,  0.4,  0.5,  0.6,  0.5,  0.5,  0.3,  0.4,  0.9,  0.4,  0.4,  0.7], // Thể thao
+        [0.4,  0.3,  0.4,  0.4,  1.0,  0.6,  0.6,  0.8,  0.3,  0.5,  0.4,  0.4,  0.5,  0.5,  0.5], // Nấu ăn
+        [0.5,  0.6,  0.8,  0.5,  0.6,  1.0,  0.8,  0.6,  0.4,  0.6,  0.6,  0.4,  0.7,  0.6,  0.5], // Chụp ảnh
+        [0.6,  0.5,  0.5,  0.6,  0.6,  0.8,  1.0,  0.5,  0.4,  0.6,  0.5,  0.5,  0.7,  0.8,  0.6], // Du lịch
+        [0.4,  0.3,  0.4,  0.5,  0.8,  0.6,  0.5,  1.0,  0.3,  0.4,  0.5,  0.4,  0.4,  0.4,  0.6], // Làm vườn
+        [0.4,  0.4,  0.4,  0.5,  0.3,  0.4,  0.4,  0.3,  1.0,  0.5,  0.7,  0.5,  0.8,  0.5,  0.3], // Game
+        [0.9,  0.6,  0.7,  0.3,  0.5,  0.6,  0.6,  0.4,  0.5,  1.0,  0.5,  0.3,  0.7,  0.7,  0.4], // Viết lách
+        [0.5,  0.6,  0.6,  0.4,  0.4,  0.6,  0.5,  0.5,  0.7,  0.5,  1.0,  0.4,  0.6,  0.5,  0.4], // Sưu tầm
+        [0.3,  0.3,  0.3,  0.9,  0.4,  0.4,  0.5,  0.4,  0.5,  0.3,  0.4,  1.0,  0.4,  0.4,  0.8], // Gym
+        [0.7,  0.6,  0.6,  0.4,  0.5,  0.7,  0.7,  0.4,  0.8,  0.7,  0.6,  0.4,  1.0,  0.6,  0.4], // Xem phim
+        [0.8,  0.6,  0.5,  0.4,  0.5,  0.6,  0.8,  0.4,  0.5,  0.7,  0.5,  0.4,  0.6,  1.0,  0.5], // Ngoại ngữ
+        [0.5,  0.5,  0.5,  0.7,  0.5,  0.5,  0.6,  0.6,  0.3,  0.4,  0.4,  0.8,  0.4,  0.5,  1.0], // Yoga
+    ],
+
+    lifestyle: [
+        //TG    BV    KM    TDM   ND    TR    HN    HT    GD    PA    NT    TN    CV    HH    CD
+        [1.0,  0.8,  0.7,  0.6,  0.4,  0.6,  0.4,  0.8,  0.5,  0.4,  0.6,  0.7,  0.5,  0.7,  0.5], // Sống tối giản
+        [0.8,  1.0,  0.8,  0.5,  0.5,  0.6,  0.5,  0.7,  0.6,  0.5,  0.6,  0.9,  0.4,  0.8,  0.8], // Sống bền vững
+        [0.7,  0.8,  1.0,  0.5,  0.8,  0.7,  0.6,  0.6,  0.7,  0.7,  0.5,  0.8,  0.6,  0.7,  0.6], // Sống khỏe mạnh
+        [0.6,  0.5,  0.5,  1.0,  0.7,  0.4,  0.7,  0.4,  0.3,  0.9,  0.7,  0.6,  0.4,  0.5,  0.5], // Sống tự do du mục
+        [0.4,  0.5,  0.8,  0.7,  1.0,  0.5,  0.9,  0.3,  0.5,  0.8,  0.6,  0.6,  0.7,  0.6,  0.7], // Sống năng động
+        [0.6,  0.6,  0.7,  0.4,  0.5,  1.0,  0.4,  0.7,  0.7,  0.4,  0.7,  0.7,  0.5,  0.8,  0.6], // Sống thư giãn
+        [0.4,  0.5,  0.6,  0.7,  0.9,  0.4,  1.0,  0.3,  0.5,  0.8,  0.6,  0.5,  0.7,  0.5,  0.7], // Sống hướng ngoại
+        [0.8,  0.7,  0.6,  0.4,  0.3,  0.7,  0.3,  1.0,  0.6,  0.3,  0.7,  0.6,  0.6,  0.7,  0.5], // Sống hướng nội
+        [0.5,  0.6,  0.7,  0.3,  0.5,  0.7,  0.5,  0.6,  1.0,  0.4,  0.5,  0.6,  0.6,  0.8,  0.7], // Sống gia đình
+        [0.4,  0.5,  0.7,  0.9,  0.8,  0.4,  0.8,  0.3,  0.4,  1.0,  0.7,  0.6,  0.5,  0.5,  0.6], // Sống phiêu lưu
+        [0.6,  0.6,  0.5,  0.7,  0.6,  0.7,  0.6,  0.7,  0.5,  0.7,  1.0,  0.7,  0.5,  0.7,  0.6], // Sống nghệ thuật
+        [0.7,  0.9,  0.8,  0.6,  0.6,  0.7,  0.5,  0.6,  0.6,  0.6,  0.7,  1.0,  0.4,  0.8,  0.7], // Sống gần gũi thiên nhiên
+        [0.5,  0.4,  0.6,  0.4,  0.7,  0.5,  0.7,  0.6,  0.6,  0.5,  0.5,  0.4,  1.0,  0.6,  0.5], // Sống tập trung công việc
+        [0.7,  0.8,  0.7,  0.5,  0.6,  0.8,  0.5,  0.7,  0.8,  0.5,  0.7,  0.8,  0.6,  1.0,  0.8], // Sống hòa hợp
+        [0.5,  0.8,  0.6,  0.5,  0.7,  0.6,  0.7,  0.5,  0.7,  0.6,  0.6,  0.7,  0.5,  0.8,  1.0], // Sống vì cộng đồng
+    ],
+
+    goals: [
+        //SN    GD    NH    DL    TC    SK    KN    BC    KN    CĐ    LĐ    SA    QH    CG    TT
+        [1.0,  0.5,  0.6,  0.4,  0.8,  0.6,  0.7,  0.7,  0.8,  0.5,  0.9,  0.5,  0.6,  0.8,  0.5], // Phát triển sự nghiệp
+        [0.5,  1.0,  0.8,  0.4,  0.6,  0.7,  0.5,  0.5,  0.4,  0.6,  0.5,  0.4,  0.9,  0.5,  0.6], // Xây dựng gia đình
+        [0.6,  0.8,  1.0,  0.4,  0.7,  0.6,  0.5,  0.5,  0.6,  0.5,  0.5,  0.4,  0.7,  0.5,  0.5], // Sở hữu nhà riêng
+        [0.4,  0.4,  0.4,  1.0,  0.6,  0.6,  0.7,  0.5,  0.5,  0.6,  0.4,  0.6,  0.5,  0.6,  0.6], // Du lịch khám phá
+        [0.8,  0.6,  0.7,  0.6,  1.0,  0.5,  0.6,  0.6,  0.8,  0.5,  0.7,  0.5,  0.6,  0.7,  0.5], // Tự do tài chính
+        [0.6,  0.7,  0.6,  0.6,  0.5,  1.0,  0.7,  0.6,  0.5,  0.6,  0.5,  0.5,  0.7,  0.6,  0.6], // Sức khỏe thể chất
+        [0.7,  0.5,  0.5,  0.7,  0.6,  0.7,  1.0,  0.8,  0.7,  0.6,  0.6,  0.7,  0.6,  0.8,  0.6], // Kỹ năng mới
+        [0.7,  0.5,  0.5,  0.5,  0.6,  0.6,  0.8,  1.0,  0.7,  0.5,  0.7,  0.6,  0.5,  0.8,  0.5], // Bằng cấp cao hơn
+        [0.8,  0.4,  0.6,  0.5,  0.8,  0.5,  0.7,  0.7,  1.0,  0.6,  0.8,  0.6,  0.5,  0.7,  0.6], // Khởi nghiệp
+        [0.5,  0.6,  0.5,  0.6,  0.5,  0.6,  0.6,  0.5,  0.6,  1.0,  0.7,  0.6,  0.7,  0.6,  0.9], // Cộng đồng
+        [0.9,  0.5,  0.5,  0.4,  0.7,  0.5,  0.6,  0.7,  0.8,  0.7,  1.0,  0.6,  0.6,  0.7,  0.7], // Lãnh đạo
+        [0.5,  0.4,  0.4,  0.6,  0.5,  0.5,  0.7,  0.6,  0.6,  0.6,  0.6,  1.0,  0.5,  0.7,  0.6], // Sách ảnh
+        [0.6,  0.9,  0.7,  0.5,  0.6,  0.7,  0.6,  0.5,  0.5,  0.7,  0.6,  0.5,  1.0,  0.6,  0.7], // Quan hệ chất lượng
+        [0.8,  0.5,  0.5,  0.6,  0.7,  0.6,  0.8,  0.8,  0.7,  0.6,  0.7,  0.7,  0.6,  1.0,  0.6], // Chuyên gia
+        [0.5,  0.6,  0.5,  0.6,  0.5,  0.6,  0.6,  0.5,  0.6,  0.9,  0.7,  0.6,  0.7,  0.6,  1.0], // Từ thiện
+    ],
+
+    values: [
+        //TT    TR    TN    TrTh  TY    ST    KT    TD    CT    DL    HB    BO    CB    CT    BB
+        [1.0,  0.8,  0.8,  0.9,  0.6,  0.5,  0.7,  0.5,  0.7,  0.5,  0.7,  0.7,  0.8,  0.9,  0.7], // Trung thực
+        [0.8,  1.0,  0.8,  0.7,  0.8,  0.6,  0.6,  0.6,  0.8,  0.6,  0.8,  0.8,  0.8,  0.7,  0.6], // Tôn trọng
+        [0.8,  0.8,  1.0,  0.7,  0.7,  0.6,  0.8,  0.5,  0.7,  0.6,  0.7,  0.7,  0.7,  0.8,  0.8], // Trách nhiệm
+        [0.9,  0.7,  0.7,  1.0,  0.7,  0.5,  0.6,  0.5,  0.6,  0.5,  0.7,  0.8,  0.7,  0.8,  0.7], // Trung thành
+        [0.6,  0.8,  0.7,  0.7,  1.0,  0.7,  0.6,  0.6,  0.9,  0.6,  0.8,  0.8,  0.7,  0.6,  0.6], // Tình yêu thương
+        [0.5,  0.6,  0.6,  0.5,  0.7,  1.0,  0.7,  0.8,  0.7,  0.8,  0.7,  0.6,  0.6,  0.5,  0.7], // Sáng tạo
+        [0.7,  0.6,  0.8,  0.6,  0.6,  0.7,  1.0,  0.7,  0.6,  0.7,  0.6,  0.6,  0.7,  0.7,  0.9], // Kiên trì
+        [0.5,  0.6,  0.5,  0.5,  0.6,  0.8,  0.7,  1.0,  0.6,  0.9,  0.7,  0.5,  0.6,  0.5,  0.7], // Tự do
+        [0.7,  0.8,  0.7,  0.6,  0.9,  0.7,  0.6,  0.6,  1.0,  0.6,  0.8,  0.8,  0.7,  0.6,  0.6], // Cảm thông
+        [0.5,  0.6,  0.6,  0.5,  0.6,  0.8,  0.7,  0.9,  0.6,  1.0,  0.7,  0.5,  0.6,  0.5,  0.7], // Độc lập
+        [0.7,  0.8,  0.7,  0.7,  0.8,  0.7,  0.6,  0.7,  0.8,  0.7,  1.0,  0.7,  0.8,  0.7,  0.6], // Hòa bình
+        [0.7,  0.8,  0.7,  0.8,  0.8,  0.6,  0.6,  0.5,  0.8,  0.5,  0.7,  1.0,  0.7,  0.7,  0.6], // Biết ơn
+        [0.8,  0.8,  0.7,  0.7,  0.7,  0.6,  0.7,  0.6,  0.7,  0.6,  0.8,  0.7,  1.0,  0.8,  0.7], // Công bằng
+        [0.9,  0.7,  0.8,  0.8,  0.6,  0.5,  0.7,  0.5,  0.6,  0.5,  0.7,  0.7,  0.8,  1.0,  0.7], // Chính trực
+        [0.7,  0.6,  0.8,  0.7,  0.6,  0.7,  0.9,  0.7,  0.6,  0.7,  0.6,  0.6,  0.7,  0.7,  1.0], // Bền bỉ
+    ]
 };
 
-const calculateDistance = (location1, location2) => {
+function calculateDistance(location1, location2) {
     if (!location1 || !location2) return 0;
+    
     const R = 6371;
     const lat1 = location1.lat * Math.PI / 180;
     const lat2 = location2.lat * Math.PI / 180;
@@ -164,19 +122,22 @@ const calculateDistance = (location1, location2) => {
     const distance = R * c;
     
     return Math.max(0, 1 - distance/100);
-};
+}
 
-const calculateAgeScore = (age1, age2) => {
+function calculateAgeScore(age1, age2) {
     const ageDiff = Math.abs(age1 - age2);
     return Math.max(0, 1 - ageDiff/20);
-};
+}
 
-const calculateCompatibilityScore = (item1, item2, matrix) => {
-    if (!matrix[item1] || !matrix[item2]) return 0.5;
+function calculateCompatibilityScore(item1, item2, matrix) {
+    if (!matrix[item1] || !matrix[item2]) {
+        if (item1 === item2) return 1;
+        return 0.5;
+    }
     return matrix[item1][item2] || matrix[item2][item1] || 0.5;
-};
+}
 
-const calculateArrayCompatibility = (arr1, arr2, matrix) => {
+function calculateArrayCompatibility(arr1, arr2, matrix) {
     if (!arr1 || !arr2 || arr1.length === 0 || arr2.length === 0) return 0;
     
     let totalScore = 0;
@@ -190,53 +151,43 @@ const calculateArrayCompatibility = (arr1, arr2, matrix) => {
     });
 
     return comparisons > 0 ? totalScore / comparisons : 0;
-};
+}
 
 exports.calculateMatchScore = (user1, user2) => {
-    const distanceScore = calculateDistance(user1.location, user2.location);
-    const ageScore = calculateAgeScore(user1.age, user2.age);
-    
-    const occupationScore = calculateCompatibilityScore(
-        user1.occupation,
-        user2.occupation,
-        COMPATIBILITY_MATRICES.occupation
-    );
+    const scores = {
+        distance: calculateDistance(user1.location, user2.location),
+        age: calculateAgeScore(user1.age, user2.age),
+        occupation: calculateCompatibilityScore(
+            user1.occupation,
+            user2.occupation,
+            COMPATIBILITY_MATRICES.occupation
+        ),
+        interests: calculateArrayCompatibility(
+            user1.interests,
+            user2.interests,
+            COMPATIBILITY_MATRICES.interests
+        ),
+        lifestyle: calculateArrayCompatibility(
+            user1.lifestyle,
+            user2.lifestyle,
+            COMPATIBILITY_MATRICES.lifestyle
+        ),
+        goals: calculateArrayCompatibility(
+            user1.goals,
+            user2.goals,
+            COMPATIBILITY_MATRICES.goals
+        ),
+        values: calculateArrayCompatibility(
+            user1.values,
+            user2.values,
+            COMPATIBILITY_MATRICES.values
+        )
+    };
 
-    const interestsScore = calculateArrayCompatibility(
-        user1.interests,
-        user2.interests,
-        COMPATIBILITY_MATRICES.interests
-    );
+    let finalScore = 0;
+    for (const [category, score] of Object.entries(scores)) {
+        finalScore += WEIGHTS[category] * score;
+    }
 
-    const lifestyleScore = calculateArrayCompatibility(
-        user1.lifestyle,
-        user2.lifestyle,
-        COMPATIBILITY_MATRICES.lifestyle
-    );
-
-    const goalsScore = calculateArrayCompatibility(
-        user1.goals,
-        user2.goals,
-        COMPATIBILITY_MATRICES.goals
-    );
-
-    const valuesScore = calculateArrayCompatibility(
-        user1.values,
-        user2.values,
-        COMPATIBILITY_MATRICES.values
-    );
-
-    const orientationScore = user1.orientation === user2.orientation ? 1 : 0;
-
-    const totalScore = 
-        WEIGHTS.distance * distanceScore +
-        WEIGHTS.age * ageScore +
-        WEIGHTS.occupation * occupationScore +
-        WEIGHTS.interests * interestsScore +
-        WEIGHTS.lifestyle * lifestyleScore +
-        WEIGHTS.goals * goalsScore +
-        WEIGHTS.values * valuesScore +
-        WEIGHTS.orientation * orientationScore;
-
-    return totalScore;
+    return finalScore;
 }; 

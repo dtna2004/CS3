@@ -97,4 +97,17 @@ exports.blockMatch = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
     }
+};
+
+exports.getPendingCount = async (req, res) => {
+    try {
+        const count = await Match.countDocuments({
+            receiver: req.userId,
+            status: 'pending'
+        });
+
+        res.json({ count });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server' });
+    }
 }; 

@@ -13,42 +13,73 @@
             <a href="home.html">Dating Web</a>
         </div>
         <div class="nav-links">
-            <a href="profile.html">Hồ sơ</a>
-            <a href="matching.html">Ghép cặp</a>
-            <a href="match-management.html">Quản lý bạn bè</a>
-            <a href="notifications.html">Thông báo</a>
-            <a href="settings.html">Cài đặt</a>
-            <a href="#" id="logoutBtn">Đăng xuất</a>
+            <a href="profile.html">
+                <i class="nav-icon">👤</i>
+                <span class="nav-text">Hồ sơ</span>
+            </a>
+            <a href="matching.html">
+                <i class="nav-icon">💘</i>
+                <span class="nav-text">Ghép cặp</span>
+            </a>
+            <a href="match-management.html">
+                <i class="nav-icon">👥</i>
+                <span class="nav-text">Bạn bè</span>
+            </a>
+            <a href="notifications.html">
+                <i class="nav-icon">🔔</i>
+                <span class="nav-text">Thông báo</span>
+            </a>
+            <a href="settings.html">
+                <i class="nav-icon">⚙️</i>
+                <span class="nav-text">Cài đặt</span>
+            </a>
+            <a href="#" id="logoutBtn">
+                <i class="nav-icon">🚪</i>
+                <span class="nav-text">Đăng xuất</span>
+            </a>
         </div>
     </nav>
 
     <div class="chat-container">
         <div class="chat-list">
             <div class="chat-list-header">
-                <h2>Tin nhắn</h2>
+                <h2>
+                    <i class="header-icon">💬</i>
+                    Tin nhắn
+                </h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Tìm kiếm..." id="searchChat">
+                    <i class="search-icon">🔍</i>
+                </div>
             </div>
-            <div id="chatUsersList"></div>
+            <div id="chatUsersList" class="chat-users-list"></div>
         </div>
         <div class="chat-messages">
             <div id="messageHeader" class="message-header">
                 <img src="../images/default-avatar.png" alt="Avatar" id="chatUserAvatar">
-                <h3 id="chatUserName">Chọn người để chat</h3>
+                <div class="user-info">
+                    <h3 id="chatUserName">Chọn người để chat</h3>
+                    <span class="user-status">Trực tuyến</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-view-profile" onclick="viewProfile()">
+                        <i class="action-icon">👤</i>
+                    </button>
+                </div>
             </div>
             <div id="messagesContainer" class="messages-container"></div>
             <div class="message-input">
                 <input type="text" id="messageInput" placeholder="Nhập tin nhắn...">
-                <button id="sendMessageBtn">Gửi</button>
+                <button id="sendMessageBtn" onclick="sendMessage()">
+                    <i class="send-icon">📨</i>
+                </button>
             </div>
         </div>
     </div>
+
+    <script src="../js/constants.js"></script>
+    <script src="../js/chat.js"></script>
+    <script src="../js/notificationBadge.js"></script>
+    <script src="../js/common.js"></script>
 </body>
-<script src="../js/constants.js"></script>
-<script src="../js/chat.js"></script>
-<script>
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    window.location.href = 'login.html';
-});
-</script>
 </html> 

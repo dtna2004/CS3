@@ -13,7 +13,7 @@ async function loadUserProfile() {
             
             document.getElementById('userAvatar').src = user.avatar || '../images/default-avatar.png';
             document.getElementById('userName').textContent = user.name || 'Chưa cập nhật';
-            document.getElementById('userLocation').textContent = user.location?.address || 'Chưa cập nhật';
+            //document.getElementById('userLocation').textContent = user.location?.address || 'Chưa cập nhật';
             document.getElementById('userAge').textContent = user.age || 'Chưa cập nhật';
             document.getElementById('userGender').textContent = translateGender(user.gender) || 'Chưa cập nhật';
             document.getElementById('userOccupation').textContent = user.occupation || 'Chưa cập nhật';

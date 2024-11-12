@@ -4,31 +4,254 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
+:root {
+    --halloween-orange: #ff6b1a;
+    --halloween-purple: #6b1a6b;
+    --halloween-black: #1a1a1a;
+    --halloween-green: #4caf50;
+    --halloween-red: #ff1a1a;
+    --spooky-shadow: 0 4px 8px rgba(255, 107, 26, 0.2);
 }
 
-.btn-primary {
-    background-color: #ff4b6e;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    display: inline-block;
+body {
+    background-color: var(--halloween-black);
+    color: #fff;
+    font-family: 'Creepster', cursive;
+    background-image: url('../images/halloween-bg.png');
+    background-blend-mode: overlay;
+    line-height: 1.6;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 150px;
+    height: 150px;
+    background: url('../images/web.png') no-repeat;
+    background-size: contain;
+    z-index: -1;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: url('../images/pumpkin.png') no-repeat;
+    background-size: contain;
+    z-index: -1;
 }
 
 nav {
+    background: rgba(26, 26, 26, 0.9);
+    border-bottom: 2px solid var(--halloween-orange);
+    box-shadow: 0 2px 10px rgba(255, 107, 26, 0.3);
+    padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo a {
+    color: var(--halloween-orange);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo a::before {
+    content: '🎃';
+    font-size: 28px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
 }
 
 .nav-links a {
-    margin-left: 20px;
+    color: var(--halloween-orange);
     text-decoration: none;
-    color: #333;
-} 
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    position: relative;
+}
+
+.nav-links a:hover {
+    background: rgba(255, 107, 26, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-links a.active {
+    background: rgba(255, 107, 26, 0.3);
+    color: #fff;
+}
+
+/* Thêm style cho badge thông báo */
+.nav-links a[data-badge]::after {
+    content: attr(data-badge);
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--halloween-red);
+    color: white;
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 12px;
+    min-width: 20px;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Thêm style cho trạng thái hover */
+.nav-links a:hover[data-badge]::after {
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    nav {
+        padding: 10px 15px;
+    }
+
+    .nav-links {
+        gap: 15px;
+    }
+
+    .nav-links a {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .nav-text {
+        display: none; /* Ẩn text trên mobile, chỉ hiện icon */
+    }
+}
+
+input, select, textarea {
+    background: rgba(26, 26, 26, 0.8) !important;
+    border: 1px solid var(--halloween-orange) !important;
+    color: #fff !important;
+    box-shadow: 0 0 10px rgba(255, 107, 26, 0.1);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: var(--halloween-purple) !important;
+    box-shadow: 0 0 15px rgba(255, 107, 26, 0.3);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--halloween-orange), #ff8c00);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--spooky-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #ff8c00, var(--halloween-orange));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(255, 107, 26, 0.3);
+}
+
+.btn-primary::before {
+    content: '👻';
+    position: absolute;
+    left: -20px;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover::before {
+    left: 10px;
+    opacity: 1;
+}
+
+@keyframes floatingGhost {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+.ghost-decoration {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    background: url('../images/ghost.png') no-repeat;
+    background-size: contain;
+    animation: floatingGhost 3s ease-in-out infinite;
+    z-index: -1;
+}
+
+.ghost-decoration:nth-child(1) { top: 20%; left: 5%; }
+.ghost-decoration:nth-child(2) { top: 40%; right: 5%; }
+.ghost-decoration:nth-child(3) { bottom: 20%; left: 10%; }
+
+@keyframes spiderDangle {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+    100% { transform: translateY(0); }
+}
+
+.spider-decoration {
+    position: fixed;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    background: url('../images/spider.png') no-repeat;
+    background-size: contain;
+    animation: spiderDangle 4s ease-in-out infinite;
+    z-index: -1;
+}
+
+.spider-decoration:nth-child(1) { left: 20%; }
+.spider-decoration:nth-child(2) { right: 20%; }
+
+@keyframes spookyFloat {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0); }
+}
+
+.match-card, .notification-card {
+    animation: spookyFloat 3s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0% { text-shadow: 0 0 5px var(--halloween-orange); }
+    50% { text-shadow: 0 0 20px var(--halloween-orange); }
+    100% { text-shadow: 0 0 5px var(--halloween-orange); }
+}
+
+h1, h2 {
+    animation: glowPulse 2s ease-in-out infinite;
+}

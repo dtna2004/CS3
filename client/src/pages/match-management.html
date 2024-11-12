@@ -6,29 +6,71 @@
     <title>Quản lý bạn bè - Dating Web</title>
     <link rel="stylesheet" href="../styles/common.css">
     <link rel="stylesheet" href="../styles/match-management.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="spider-decoration"></div>
+    <div class="spider-decoration"></div>
+
     <nav>
         <div class="logo">
             <a href="home.html">Dating Web</a>
         </div>
         <div class="nav-links">
-            <a href="profile.html">Hồ sơ</a>
-            <a href="matching.html">Ghép cặp</a>
-            <a href="chat.html">Tin nhắn</a>
-            <a href="notifications.html">Thông báo</a>
-            <a href="settings.html">Cài đặt</a>
-            <a href="#" id="logoutBtn">Đăng xuất</a>
+            <a href="profile.html">
+                <i class="nav-icon">👤</i>
+                <span class="nav-text">Hồ sơ</span>
+            </a>
+            <a href="matching.html">
+                <i class="nav-icon">💘</i>
+                <span class="nav-text">Ghép cặp</span>
+            </a>
+            <a href="chat.html">
+                <i class="nav-icon">💬</i>
+                <span class="nav-text">Tin nhắn</span>
+            </a>
+            <a href="notifications.html">
+                <i class="nav-icon">🔔</i>
+                <span class="nav-text">Thông báo</span>
+            </a>
+            <a href="settings.html">
+                <i class="nav-icon">⚙️</i>
+                <span class="nav-text">Cài đặt</span>
+            </a>
+            <a href="#" id="logoutBtn">
+                <i class="nav-icon">🚪</i>
+                <span class="nav-text">Đăng xuất</span>
+            </a>
         </div>
     </nav>
 
     <div class="management-container">
-        <h1>Quản lý bạn bè</h1>
-        <div class="matches-grid" id="matchesContainer"></div>
+        <div class="management-tabs">
+            <button class="tab-btn active" data-tab="matches">Bạn bè</button>
+            <button class="tab-btn" data-tab="blocked">Đã chặn</button>
+            <button class="tab-btn" data-tab="unmatched">Đã hủy kết nối</button>
+        </div>
+
+        <div id="matches" class="tab-content active">
+            <div class="matches-grid" id="matchesContainer"></div>
+        </div>
+
+        <div id="blocked" class="tab-content">
+            <div class="matches-grid" id="blockedContainer"></div>
+        </div>
+
+        <div id="unmatched" class="tab-content">
+            <div class="matches-grid" id="unmatchedContainer"></div>
+        </div>
     </div>
 </body>
 <script src="../js/constants.js"></script>
 <script src="../js/match-management.js"></script>
+<script src="../js/notificationBadge.js"></script>
+<script src="../js/common.js"></script>
 <script>
     document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.removeItem('token');

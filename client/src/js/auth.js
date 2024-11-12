@@ -1,3 +1,48 @@
+async function getUserLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async position => {
+                    const location = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    
+                    try {
+                        await updateUserLocation(location);
+                        resolve(location);
+                    } catch (error) {
+                        console.error('Error updating location:', error);
+                        resolve(null);
+                    }
+                },
+                error => {
+                    console.error('Error getting location:', error);
+                    resolve(null);
+                }
+            );
+        } else {
+            console.error('Geolocation is not supported');
+            resolve(null);
+        }
+    });
+}
+
+async function updateUserLocation(location) {
+    const response = await fetch(`${API_URL}/users/location`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ location })
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to update location');
+    }
+}
+
 async function register(userData) {
     const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
@@ -42,6 +87,7 @@ if (document.getElementById('registerForm')) {
             if (data.token) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userId', data.userId);
+                await getUserLocation();
                 window.location.href = 'settings.html';
             } else {
                 alert('Đăng ký thất bại');
@@ -66,6 +112,7 @@ if (document.getElementById('loginForm')) {
             if (data.token) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userId', data.userId);
+                await getUserLocation();
                 window.location.href = 'profile.html';
             } else {
                 alert('Đăng nhập thất bại');

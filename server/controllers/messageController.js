@@ -9,12 +9,13 @@ exports.sendMessage = async (req, res) => {
             $or: [
                 { sender: req.userId, receiver: receiverId },
                 { sender: receiverId, receiver: req.userId }
-            ],
-            status: 'accepted'
+            ]
         });
 
-        if (!match) {
-            return res.status(403).json({ message: 'Chưa kết nối với người này' });
+        if (!match || match.status !== 'accepted') {
+            return res.status(403).json({ 
+                message: 'Không thể gửi tin nhắn cho người này' 
+            });
         }
 
         const message = new Message({
@@ -33,13 +34,19 @@ exports.sendMessage = async (req, res) => {
 exports.getMessages = async (req, res) => {
     try {
         const { userId } = req.params;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
 
         const messages = await Message.find({
             $or: [
                 { sender: req.userId, receiver: userId },
                 { sender: userId, receiver: req.userId }
             ]
-        }).sort({ createdAt: 1 });
+        })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
 
         await Message.updateMany(
             {
@@ -50,7 +57,17 @@ exports.getMessages = async (req, res) => {
             { read: true }
         );
 
-        res.json(messages);
+        const totalMessages = await Message.countDocuments({
+            $or: [
+                { sender: req.userId, receiver: userId },
+                { sender: userId, receiver: req.userId }
+            ]
+        });
+
+        res.json({
+            messages: messages.reverse(),
+            hasMore: skip + messages.length < totalMessages
+        });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
     }

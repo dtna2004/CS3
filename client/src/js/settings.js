@@ -55,16 +55,34 @@ function initializeForm() {
 
 // Upload ảnh lên Cloudinary
 async function uploadImage(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'dating_app');
+        formData.append('cloud_name', 'djkesszqc');
 
-    const response = await fetch(CLOUDINARY_URL, {
-        method: 'POST',
-        body: formData
-    });
-    const data = await response.json();
-    return data.secure_url;
+        console.log('Uploading to:', CLOUDINARY_URL);
+        console.log('Upload preset:', 'dating_app');
+        console.log('Cloud name:', 'djkesszqc');
+
+        const response = await fetch('https://api.cloudinary.com/v1_1/djkesszqc/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Upload error response:', errorData);
+            throw new Error(`Upload failed: ${errorData.error?.message || 'Unknown error'}`);
+        }
+
+        const data = await response.json();
+        console.log('Upload success:', data);
+        return data.secure_url;
+    } catch (error) {
+        console.error('Full upload error:', error);
+        throw error;
+    }
 }
 
 // Xử lý submit form
@@ -106,15 +124,38 @@ document.getElementById('settingsForm').addEventListener('submit', async (e) => 
     }
 });
 
+// Thêm event listeners cho upload avatar
+document.getElementById('avatarInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Hiển thị preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatarPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+        
+        // Enable nút upload
+        document.getElementById('uploadAvatarBtn').disabled = false;
+    }
+});
+
 // Xử lý upload avatar
 document.getElementById('uploadAvatarBtn').addEventListener('click', async () => {
     const fileInput = document.getElementById('avatarInput');
     const file = fileInput.files[0];
     
     if (file) {
-        const imageUrl = await uploadImage(file);
-        if (imageUrl) {
-            try {
+        try {
+            const uploadBtn = document.getElementById('uploadAvatarBtn');
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="btn-icon">🔄</i> Đang tải lên...';
+
+            console.log('Starting upload for file:', file.name);
+            const imageUrl = await uploadImage(file);
+            console.log('Upload successful, URL:', imageUrl);
+            
+            if (imageUrl) {
                 const response = await fetch(`${API_URL}/users/avatar`, {
                     method: 'PUT',
                     headers: {
@@ -126,13 +167,27 @@ document.getElementById('uploadAvatarBtn').addEventListener('click', async () =>
 
                 if (response.ok) {
                     document.getElementById('avatarPreview').src = imageUrl;
+                    alert('Cập nhật avatar thành công');
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(`Cập nhật avatar thất bại: ${errorData.message}`);
                 }
-            } catch (error) {
-                alert('Có lỗi xảy ra khi cập nhật avatar');
             }
+        } catch (error) {
+            console.error('Full error details:', error);
+            alert('Có lỗi xảy ra khi cập nhật avatar: ' + error.message);
+        } finally {
+            const uploadBtn = document.getElementById('uploadAvatarBtn');
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="btn-icon">🔄</i> Cập nhật ảnh đại diện';
         }
+    } else {
+        alert('Vui lòng chọn ảnh');
     }
 });
+
+// Disable nút upload ban đầu
+document.getElementById('uploadAvatarBtn').disabled = true;
 
 // Load thông tin người dùng
 async function loadUserData() {

@@ -12,11 +12,16 @@
 }
 
 .match-card {
-    background: white;
-    border-radius: 10px;
+    background: rgba(26, 26, 26, 0.9);
+    border: 2px solid var(--halloween-orange);
+    box-shadow: var(--spooky-shadow);
     padding: 20px;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.match-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(255, 107, 26, 0.3);
 }
 
 .match-card img {
@@ -49,4 +54,20 @@
 
 .match-card button:hover {
     background: #ff3356;
+}
+
+.score-bar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.score-fill {
+    background: var(--halloween-orange);
+}
+
+.match-actions button {
+    background: var(--halloween-orange);
+}
+
+.match-actions button:hover {
+    background: var(--halloween-purple);
 } 

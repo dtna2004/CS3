@@ -6,19 +6,44 @@
     <title>Thông báo - Dating Web</title>
     <link rel="stylesheet" href="../styles/common.css">
     <link rel="stylesheet" href="../styles/notifications.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="spider-decoration"></div>
+    <div class="spider-decoration"></div>
+
     <nav>
         <div class="logo">
             <a href="home.html">Dating Web</a>
         </div>
         <div class="nav-links">
-            <a href="profile.html">Hồ sơ</a>
-            <a href="matching.html">Ghép cặp</a>
-            <a href="chat.html">Tin nhắn</a>
-            <a href="match-management.html">Quản lý bạn bè</a>
-            <a href="settings.html">Cài đặt</a>
-            <a href="#" id="logoutBtn">Đăng xuất</a>
+            <a href="profile.html">
+                <i class="nav-icon">👤</i>
+                <span class="nav-text">Hồ sơ</span>
+            </a>
+            <a href="matching.html">
+                <i class="nav-icon">💘</i>
+                <span class="nav-text">Ghép cặp</span>
+            </a>
+            <a href="chat.html">
+                <i class="nav-icon">💬</i>
+                <span class="nav-text">Tin nhắn</span>
+            </a>
+            <a href="match-management.html">
+                <i class="nav-icon">👥</i>
+                <span class="nav-text">Bạn bè</span>
+            </a>
+            <a href="settings.html">
+                <i class="nav-icon">⚙️</i>
+                <span class="nav-text">Cài đặt</span>
+            </a>
+            <a href="#" id="logoutBtn">
+                <i class="nav-icon">🚪</i>
+                <span class="nav-text">Đăng xuất</span>
+            </a>
         </div>
     </nav>
 
@@ -38,6 +63,8 @@
 </body>
 <script src="../js/constants.js"></script>
 <script src="../js/notifications.js"></script>
+<script src="../js/notificationBadge.js"></script>
+<script src="../js/common.js"></script>
 <script>
     document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.removeItem('token');

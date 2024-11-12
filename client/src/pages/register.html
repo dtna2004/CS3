@@ -6,30 +6,71 @@
     <title>Đăng ký - Dating Web</title>
     <link rel="stylesheet" href="../styles/common.css">
     <link rel="stylesheet" href="../styles/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="spider-decoration"></div>
+    <div class="spider-decoration"></div>
+
     <nav>
         <div class="logo">
-            <a href="home.html">Dating Web</a>
+            <a href="home.html">
+                <i class="logo-icon">🎃</i>
+                <span>Dating Web</span>
+            </a>
         </div>
     </nav>
 
     <div class="auth-container">
         <div class="auth-box">
-            <h2>Đăng ký tài khoản</h2>
+            <div class="auth-header">
+                <img src="../images/love-ghost.png" alt="Love Ghost" class="auth-icon">
+                <h2>Đăng ký tài khoản</h2>
+            </div>
             <form id="registerForm">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" required>
+                    <label for="email">
+                        <i class="input-icon">📧</i>
+                        Email
+                    </label>
+                    <input type="email" id="email" required placeholder="Nhập email của bạn">
                 </div>
                 <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <input type="password" id="password" required>
+                    <label for="password">
+                        <i class="input-icon">🔒</i>
+                        Mật khẩu
+                    </label>
+                    <input type="password" id="password" required placeholder="Nhập mật khẩu">
                 </div>
-                <button type="submit" class="btn-primary">Đăng ký</button>
+                <div class="form-group">
+                    <label for="confirmPassword">
+                        <i class="input-icon">🔐</i>
+                        Xác nhận mật khẩu
+                    </label>
+                    <input type="password" id="confirmPassword" required placeholder="Nhập lại mật khẩu">
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="btn-icon">🎃</i>
+                    Đăng ký
+                </button>
             </form>
-            <p class="auth-link">Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+            <div class="auth-footer">
+                <p class="auth-link">Đã có tài khoản? 
+                    <a href="login.html">
+                        <i class="link-icon">👻</i>
+                        Đăng nhập
+                    </a>
+                </p>
+            </div>
         </div>
+    </div>
+
+    <div class="auth-decorations">
+        <img src="../images/pumpkin-left.png" alt="Pumpkin" class="pumpkin-left">
+        <img src="../images/pumpkin-right.png" alt="Pumpkin" class="pumpkin-right">
     </div>
 </body>
 <script src="../js/constants.js"></script>

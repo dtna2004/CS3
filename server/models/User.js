@@ -7,8 +7,7 @@ const userSchema = new mongoose.Schema({
   age: { type: Number },
   gender: {
     type: String,
-    enum: ['male', 'female', 'other'],
-    required: true
+    enum: ['male', 'female', 'other']
   },
   avatar: { type: String },
   occupation: { type: String },
@@ -24,6 +23,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['male', 'female', 'other']
   },
+  blockedUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 

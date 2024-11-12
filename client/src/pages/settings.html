@@ -6,45 +6,94 @@
     <title>Cài đặt - Dating Web</title>
     <link rel="stylesheet" href="../styles/common.css">
     <link rel="stylesheet" href="../styles/settings.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="spider-decoration"></div>
+    <div class="spider-decoration"></div>
+
     <nav>
         <div class="logo">
             <a href="home.html">Dating Web</a>
         </div>
         <div class="nav-links">
-            <a href="profile.html">Hồ sơ</a>
-            <a href="matching.html">Ghép cặp</a>
-            <a href="chat.html">Tin nhắn</a>
-            <a href="match-management.html">Quản lý bạn bè</a>
-            <a href="notifications.html">Thông báo</a>
-            <a href="#" id="logoutBtn">Đăng xuất</a>
+            <a href="profile.html">
+                <i class="nav-icon">👤</i>
+                <span class="nav-text">Hồ sơ</span>
+            </a>
+            <a href="matching.html">
+                <i class="nav-icon">💘</i>
+                <span class="nav-text">Ghép cặp</span>
+            </a>
+            <a href="chat.html">
+                <i class="nav-icon">💬</i>
+                <span class="nav-text">Tin nhắn</span>
+            </a>
+            <a href="match-management.html">
+                <i class="nav-icon">👥</i>
+                <span class="nav-text">Bạn bè</span>
+            </a>
+            <a href="notifications.html">
+                <i class="nav-icon">🔔</i>
+                <span class="nav-text">Thông báo</span>
+            </a>
+            <a href="#" id="logoutBtn">
+                <i class="nav-icon">🚪</i>
+                <span class="nav-text">Đăng xuất</span>
+            </a>
         </div>
     </nav>
 
     <div class="settings-container">
-        <h1>Cập nhật thông tin</h1>
+        <h1>
+            <i class="settings-icon">⚙️</i>
+            Cập nhật thông tin
+        </h1>
         <form id="settingsForm">
             <div class="form-section">
-                <h2>Thông tin cơ bản</h2>
+                <h2>
+                    <i class="section-icon">👤</i>
+                    Thông tin cơ bản
+                </h2>
                 <div class="avatar-upload">
-                    <img id="avatarPreview" src="../images/default-avatar.png" alt="Avatar">
-                    <input type="file" id="avatarInput" accept="image/*">
-                    <button type="button" id="uploadAvatarBtn">Thay đổi ảnh</button>
+                    <div class="avatar-preview" onclick="document.getElementById('avatarInput').click()">
+                        <img id="avatarPreview" src="../images/default-avatar.png" alt="Avatar">
+                        <div class="avatar-overlay">
+                            <i class="upload-icon">📸</i>
+                            <span>Nhấn để thay đổi ảnh</span>
+                        </div>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/*" hidden>
+                    <button type="button" id="uploadAvatarBtn" class="btn-upload">
+                        <i class="btn-icon">🔄</i>
+                        Cập nhật ảnh đại diện
+                    </button>
                 </div>
                 
                 <div class="form-group">
-                    <label for="name">Họ tên</label>
-                    <input type="text" id="name">
+                    <label for="name">
+                        <i class="input-icon">📝</i>
+                        Họ tên
+                    </label>
+                    <input type="text" id="name" placeholder="Nhập họ tên của bạn">
                 </div>
                 
                 <div class="form-group">
-                    <label for="age">Tuổi</label>
-                    <input type="number" id="age" min="18">
+                    <label for="age">
+                        <i class="input-icon">🎂</i>
+                        Tuổi
+                    </label>
+                    <input type="number" id="age" min="18" placeholder="Nhập tuổi">
                 </div>
                 
                 <div class="form-group">
-                    <label for="gender">Giới tính</label>
+                    <label for="gender">
+                        <i class="input-icon">⚤</i>
+                        Giới tính
+                    </label>
                     <select id="gender">
                         <option value="male">Nam</option>
                         <option value="female">Nữ</option>
@@ -53,7 +102,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="occupation">Nghề nghiệp</label>
+                    <label for="occupation">
+                        <i class="input-icon">💼</i>
+                        Nghề nghiệp
+                    </label>
                     <select id="occupation">
                         <!-- Options will be added by JavaScript -->
                     </select>
@@ -61,39 +113,56 @@
             </div>
 
             <div class="form-section">
-                <h2>Sở thích</h2>
+                <h2>
+                    <i class="section-icon">⭐</i>
+                    Sở thích
+                </h2>
                 <div id="interestsContainer" class="checkbox-container">
                     <!-- Checkboxes will be added by JavaScript -->
                 </div>
             </div>
 
             <div class="form-section">
-                <h2>Phong cách sống</h2>
+                <h2>
+                    <i class="section-icon">🌟</i>
+                    Phong cách sống
+                </h2>
                 <div id="lifestyleContainer" class="checkbox-container">
                     <!-- Checkboxes will be added by JavaScript -->
                 </div>
             </div>
 
             <div class="form-section">
-                <h2>Mục tiêu</h2>
+                <h2>
+                    <i class="section-icon">🎯</i>
+                    Mục tiêu
+                </h2>
                 <div id="goalsContainer" class="checkbox-container">
                     <!-- Checkboxes will be added by JavaScript -->
                 </div>
             </div>
 
             <div class="form-section">
-                <h2>Giá trị sống</h2>
+                <h2>
+                    <i class="section-icon">💝</i>
+                    Giá trị sống
+                </h2>
                 <div id="valuesContainer" class="checkbox-container">
                     <!-- Checkboxes will be added by JavaScript -->
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary">Lưu thay đổi</button>
+            <button type="submit" class="btn-save">
+                <i class="btn-icon">💾</i>
+                Lưu thay đổi
+            </button>
         </form>
     </div>
 </body>
 <script src="../js/constants.js"></script>
 <script src="../js/settings.js"></script>
+<script src="../js/notificationBadge.js"></script>
+<script src="../js/common.js"></script>
 <script>
 document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('token');

@@ -1,71 +1,184 @@
 .settings-container {
     max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.settings-container h1 {
+    color: var(--halloween-orange);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    font-size: 32px;
 }
 
 .form-section {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+    background: rgba(26, 26, 26, 0.95);
+    border: 2px solid var(--halloween-orange);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.form-section h2 {
+    color: var(--halloween-orange);
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 24px;
 }
 
 .avatar-upload {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
-.avatar-upload img {
+.avatar-preview {
     width: 150px;
     height: 150px;
+    margin: 0 auto 15px;
+    position: relative;
     border-radius: 50%;
+    border: 3px solid var(--halloween-orange);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.avatar-preview img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    margin-bottom: 10px;
 }
 
-.checkbox-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
-.checkbox-container label {
+.avatar-preview:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.upload-icon {
+    font-size: 30px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.avatar-overlay span {
+    color: white;
+    font-size: 14px;
+}
+
+.btn-upload {
+    background: var(--halloween-orange);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    margin: 0 auto;
+    transition: all 0.3s;
+}
+
+.btn-upload:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 26, 0.4);
+}
+
+.btn-upload:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--halloween-orange);
+    margin-bottom: 8px;
 }
 
 .form-group input,
 .form-group select {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 1px solid var(--halloween-orange);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
 }
 
-button {
+.checkbox-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.checkbox-container label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.checkbox-container label:hover {
+    background: rgba(255, 107, 26, 0.1);
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--halloween-orange);
+}
+
+.btn-save {
     width: 100%;
-    padding: 10px;
-    background: #ff4b6e;
+    padding: 15px;
+    background: linear-gradient(45deg, var(--halloween-orange), var(--halloween-purple));
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
+    font-size: 18px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
 }
 
-button:hover {
-    background: #ff3356;
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 26, 0.4);
+}
+
+@media (max-width: 768px) {
+    .checkbox-container {
+        grid-template-columns: 1fr;
+    }
 } 

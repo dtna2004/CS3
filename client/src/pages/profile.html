@@ -6,56 +6,109 @@
     <title>Hồ sơ - Dating Web</title>
     <link rel="stylesheet" href="../styles/common.css">
     <link rel="stylesheet" href="../styles/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="spider-decoration"></div>
+    <div class="spider-decoration"></div>
+
     <nav>
         <div class="logo">
-            <a href="home.html">Dating Web</a>
+            <a href="home.html">
+                Dating Web
+            </a>
         </div>
         <div class="nav-links">
-            <a href="matching.html">Ghép cặp</a>
-            <a href="chat.html">Tin nhắn</a>
-            <a href="match-management.html">Quản lý bạn bè</a>
-            <a href="notifications.html">Thông báo</a>
-            <a href="settings.html">Cài đặt</a>
-            <a href="#" id="logoutBtn">Đăng xuất</a>
+            <a href="matching.html">
+                <i class="nav-icon">💘</i>
+                <span class="nav-text">Ghép cặp</span>
+            </a>
+            <a href="chat.html">
+                <i class="nav-icon">💬</i>
+                <span class="nav-text">Tin nhắn</span>
+            </a>
+            <a href="match-management.html">
+                <i class="nav-icon">👥</i>
+                <span class="nav-text">Bạn bè</span>
+            </a>
+            <a href="notifications.html">
+                <i class="nav-icon">🔔</i>
+                <span class="nav-text">Thông báo</span>
+            </a>
+            <a href="settings.html">
+                <i class="nav-icon">⚙️</i>
+                <span class="nav-text">Cài đặt</span>
+            </a>
+            <a href="#" id="logoutBtn">
+                <i class="nav-icon">🚪</i>
+                <span class="nav-text">Đăng xuất</span>
+            </a>
         </div>
     </nav>
 
-    <div class="profile-container">
-        <div class="profile-header">
+    <div class="main-container">
+        <div class="profile-sidebar">
             <div class="avatar-container">
                 <img id="userAvatar" src="../images/default-avatar.png" alt="Avatar">
+                <div class="avatar-overlay">
+                    <span>🎃</span>
+                </div>
             </div>
             <h1 id="userName">Tên người dùng</h1>
-            <p id="userLocation">Địa điểm</p>
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Lượt thích</span>
+                    <span class="stat-value">128</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Bạn bè</span>
+                    <span class="stat-value">45</span>
+                </div>
+            </div>
         </div>
 
         <div class="profile-content">
-            <div class="profile-section">
+            <div class="profile-section basic-info">
                 <h2>Thông tin cơ bản</h2>
-                <p>Tuổi: <span id="userAge"></span></p>
-                <p>Giới tính: <span id="userGender"></span></p>
-                <p>Nghề nghiệp: <span id="userOccupation"></span></p>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="info-icon">🎂</i>
+                        <span class="info-label">Tuổi</span>
+                        <span id="userAge" class="info-value">25</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="info-icon">👤</i>
+                        <span class="info-label">Giới tính</span>
+                        <span id="userGender" class="info-value">Nam</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="info-icon">💼</i>
+                        <span class="info-label">Nghề nghiệp</span>
+                        <span id="userOccupation" class="info-value">Kỹ sư phần mềm</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="profile-section">
-                <h2>Sở thích</h2>
+            <div class="profile-section interests">
+                <h2><i class="section-icon">⭐</i> Sở thích</h2>
                 <div id="userInterests" class="tags-container"></div>
             </div>
 
-            <div class="profile-section">
-                <h2>Phong cách sống</h2>
+            <div class="profile-section lifestyle">
+                <h2><i class="section-icon">🌟</i> Phong cách sống</h2>
                 <div id="userLifestyle" class="tags-container"></div>
             </div>
 
-            <div class="profile-section">
-                <h2>Mục tiêu</h2>
+            <div class="profile-section goals">
+                <h2><i class="section-icon">🎯</i> Mục tiêu</h2>
                 <div id="userGoals" class="tags-container"></div>
             </div>
 
-            <div class="profile-section">
-                <h2>Giá trị sống</h2>
+            <div class="profile-section values">
+                <h2><i class="section-icon">💝</i> Giá trị sống</h2>
                 <div id="userValues" class="tags-container"></div>
             </div>
         </div>
@@ -63,6 +116,8 @@
 </body>
 <script src="../js/constants.js"></script>
 <script src="../js/profile.js"></script>
+<script src="../js/notificationBadge.js"></script>
+<script src="../js/common.js"></script>
 <script>
 document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('token');

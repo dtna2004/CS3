@@ -1,0 +1,116 @@
+.video-call-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.video-box {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.video-controls {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.video-control-btn {
+    background: var(--halloween-orange);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.video-control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 26, 0.4);
+}
+
+.video-control-btn.end-call {
+    background: #ff3356;
+}
+
+.incoming-call-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(26, 26, 26, 0.95);
+    border: 2px solid var(--halloween-orange);
+    border-radius: 15px;
+    padding: 30px;
+    z-index: 1000;
+    text-align: center;
+}
+
+.incoming-call-content h3 {
+    color: var(--halloween-orange);
+    margin-bottom: 20px;
+}
+
+.incoming-call-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.accept-call {
+    background: var(--halloween-green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reject-call {
+    background: var(--halloween-red);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media (max-width: 768px) {
+    .video-container {
+        grid-template-columns: 1fr;
+    }
+
+    .video-controls {
+        flex-direction: column;
+    }
+} 

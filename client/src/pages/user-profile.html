@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin người dùng - Dating Web</title>
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/user-profile.css">
+</head>
+<body>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="ghost-decoration"></div>
+    <div class="spider-decoration"></div>
+    <div class="spider-decoration"></div>
+
+    <nav>
+        <div class="logo">
+            <a href="home.html">Dating Web</a>
+        </div>
+        <div class="nav-links">
+            <a href="matching.html">Ghép cặp</a>
+            <a href="chat.html">Tin nhắn</a>
+            <a href="notifications.html">Thông báo</a>
+            <a href="profile.html">Hồ sơ</a>
+            <a href="#" id="logoutBtn">Đăng xuất</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="profile-sidebar">
+            <div class="avatar-container">
+                <img id="userAvatar" src="../images/default-avatar.png" alt="Avatar">
+            </div>
+            <h1 id="userName"></h1>
+            <div class="match-score">
+                <div class="score-bar">
+                    <div class="score-fill" id="matchScore"></div>
+                </div>
+                <span class="score-text">Độ phù hợp</span>
+            </div>
+            <div class="profile-actions">
+                <button id="connectBtn" class="btn-connect">
+                    <i class="btn-icon">💘</i>
+                    Kết nối
+                </button>
+                <button id="messageBtn" class="btn-message">
+                    <i class="btn-icon">💬</i>
+                    Nhắn tin
+                </button>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="profile-section basic-info">
+                <h2>
+                    <i class="section-icon">👤</i>
+                    Thông tin cơ bản
+                </h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="info-icon">🎂</i>
+                        <span class="info-label">Tuổi</span>
+                        <span id="userAge" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="info-icon">💼</i>
+                        <span class="info-label">Nghề nghiệp</span>
+                        <span id="userOccupation" class="info-value"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="info-icon">📍</i>
+                        <span class="info-label">Khoảng cách</span>
+                        <span id="userDistance" class="info-value"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2>
+                    <i class="section-icon">⭐</i>
+                    Sở thích
+                </h2>
+                <div id="userInterests" class="tags-container"></div>
+            </div>
+
+            <div class="profile-section">
+                <h2>
+                    <i class="section-icon">🌟</i>
+                    Phong cách sống
+                </h2>
+                <div id="userLifestyle" class="tags-container"></div>
+            </div>
+
+            <div class="profile-section">
+                <h2>
+                    <i class="section-icon">🎯</i>
+                    Mục tiêu
+                </h2>
+                <div id="userGoals" class="tags-container"></div>
+            </div>
+
+            <div class="profile-section">
+                <h2>
+                    <i class="section-icon">💝</i>
+                    Giá trị sống
+                </h2>
+                <div id="userValues" class="tags-container"></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../js/constants.js"></script>
+<script src="../js/user-profile.js"></script>
+</html> 

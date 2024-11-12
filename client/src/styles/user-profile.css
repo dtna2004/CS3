@@ -1,0 +1,223 @@
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.avatar-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-section {
+    background: rgba(26, 26, 26, 0.95);
+    border: 2px solid var(--halloween-orange);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.info-item {
+    background: rgba(255, 107, 26, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 107, 26, 0.3);
+}
+
+.info-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 107, 26, 0.2);
+}
+
+.info-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: var(--halloween-orange);
+}
+
+.info-label {
+    display: block;
+    color: var(--halloween-orange);
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.info-value {
+    color: #fff;
+    font-size: 1.1em;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    background: rgba(255, 107, 26, 0.15);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    border: 1px solid var(--halloween-orange);
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background: rgba(255, 107, 26, 0.3);
+    transform: translateY(-2px);
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-connect, .btn-back {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.btn-connect {
+    background: #ff4b6e;
+    color: white;
+}
+
+.btn-back {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-connect:hover {
+    background: #ff3356;
+}
+
+.btn-back:hover {
+    background: #e0e0e0;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.profile-sidebar {
+    background: rgba(26, 26, 26, 0.95);
+    border: 2px solid var(--halloween-orange);
+    border-radius: 15px;
+    padding: 30px;
+    position: sticky;
+    top: 90px;
+    height: fit-content;
+    text-align: center;
+}
+
+.avatar-container {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--halloween-orange);
+    box-shadow: 0 0 20px rgba(255, 107, 26, 0.3);
+}
+
+.avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.match-score {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 107, 26, 0.1);
+    border-radius: 10px;
+}
+
+.score-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.score-fill {
+    height: 100%;
+    background: var(--halloween-orange);
+    transition: width 0.3s ease;
+}
+
+.score-text {
+    color: var(--halloween-orange);
+    font-size: 14px;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-connect, .btn-message {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-connect {
+    background: var(--halloween-orange);
+    color: white;
+}
+
+.btn-message {
+    background: rgba(255, 107, 26, 0.1);
+    color: var(--halloween-orange);
+    border: 1px solid var(--halloween-orange);
+}
+
+.btn-connect:hover, .btn-message:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 26, 0.4);
+} 

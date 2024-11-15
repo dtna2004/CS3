@@ -13,5 +13,6 @@ router.post('/unmatch', auth, matchController.unmatchUser);
 router.post('/unblock', auth, matchController.unblockUser);
 router.post('/rematch', auth, matchController.rematchUser);
 router.get('/status/:status', auth, matchController.getMatchesByStatus);
+router.get('/friends/:userId', auth, matchController.getFriends);
 
 module.exports = router; 

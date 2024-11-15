@@ -324,4 +324,38 @@ exports.getMatchesByStatus = async (req, res) => {
         console.error(`Error getting ${status} matches:`, error);
         res.status(500).json({ message: 'Lỗi server' });
     }
+};
+
+exports.getFriends = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const limit = parseInt(req.query.limit) || 0; // 0 means no limit
+        
+        const matches = await Match.find({
+            $or: [
+                { sender: userId, status: 'accepted' },
+                { receiver: userId, status: 'accepted' }
+            ]
+        });
+
+        const friendIds = matches.map(match => 
+            match.sender.toString() === userId ? match.receiver : match.sender
+        );
+
+        let query = User.find(
+            { _id: { $in: friendIds } },
+            'name avatar'
+        );
+
+        if (limit > 0) {
+            query = query.limit(limit);
+        }
+
+        const friends = await query;
+
+        res.json(friends);
+    } catch (error) {
+        console.error('Get friends error:', error);
+        res.status(500).json({ message: 'Lỗi server' });
+    }
 }; 

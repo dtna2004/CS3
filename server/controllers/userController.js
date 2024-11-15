@@ -1,4 +1,16 @@
 const User = require('../models/User');
+const Match = require('../models/Match');
+
+// Thêm hàm mới để đếm số bạn bè
+async function countFriends(userId) {
+    const friendCount = await Match.countDocuments({
+        $or: [
+            { sender: userId, status: 'accepted' },
+            { receiver: userId, status: 'accepted' }
+        ]
+    });
+    return friendCount;
+}
 
 exports.updateProfile = async (req, res) => {
     try {
@@ -34,7 +46,15 @@ exports.getProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Không tìm thấy người dùng' });
         }
-        res.json(user);
+
+        const friendCount = await countFriends(req.userId);
+        
+        const userProfile = {
+            ...user.toObject(),
+            friendCount
+        };
+
+        res.json(userProfile);
     } catch (error) {
         res.status(500).json({ message: 'Lỗi server' });
     }
@@ -47,7 +67,8 @@ exports.getUserProfile = async (req, res) => {
             return res.status(404).json({ message: 'Không tìm thấy người dùng' });
         }
 
-        // Chỉ trả về thông tin công khai
+        const friendCount = await countFriends(req.params.id);
+
         const publicProfile = {
             _id: user._id,
             name: user.name,
@@ -55,10 +76,11 @@ exports.getUserProfile = async (req, res) => {
             avatar: user.avatar,
             occupation: user.occupation,
             interests: user.interests,
-            lifestyle: user.lifestyle,
+            lifestyle: user.lifestyle, 
             goals: user.goals,
             values: user.values,
-            location: user.location
+            location: user.location,
+            friendCount
         };
 
         res.json(publicProfile);

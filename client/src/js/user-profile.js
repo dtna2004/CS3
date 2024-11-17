@@ -1,3 +1,22 @@
+function renderTags(containerId, items = []) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    items.forEach(item => {
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = item;
+        container.appendChild(tag);
+    });
+}
+
+let currentUser = null;
+let currentFriendsPage = 0;
+let allFriends = [];
+const friendsPerPage = 8;
+
 async function loadUserProfile() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -21,7 +40,10 @@ async function loadUserProfile() {
         }
 
         const user = await response.json();
+        currentUser = user;
         displayUserProfile(user);
+        
+        await loadAllFriends(userId);
     } catch (error) {
         console.error('Error:', error);
         alert(error.message || 'Có lỗi xảy ra khi tải thông tin người dùng');
@@ -49,45 +71,112 @@ function displayUserProfile(user) {
         occupationElement.textContent = user.occupation || 'Chưa cập nhật';
     }
 
-    const interestsContainer = document.getElementById('userInterests');
-    if (interestsContainer) {
-        interestsContainer.innerHTML = user.interests?.map(interest => 
-            `<span class="tag">${interest}</span>`
-        ).join('') || 'Chưa cập nhật';
+    const friendCountElement = document.querySelector('.stat-item .stat-value');
+    if (friendCountElement) {
+        friendCountElement.textContent = user.friendCount || 0;
     }
 
-    const lifestyleContainer = document.getElementById('userLifestyle');
-    if (lifestyleContainer) {
-        lifestyleContainer.innerHTML = user.lifestyle?.map(style => 
-            `<span class="tag">${style}</span>`
-        ).join('') || 'Chưa cập nhật';
+    const friendCountMainElement = document.getElementById('friendCount');
+    if (friendCountMainElement) {
+        friendCountMainElement.textContent = user.friendCount || 0;
     }
 
-    const goalsContainer = document.getElementById('userGoals');
-    if (goalsContainer) {
-        goalsContainer.innerHTML = user.goals?.map(goal => 
-            `<span class="tag">${goal}</span>`
-        ).join('') || 'Chưa cập nhật';
-    }
+    renderTags('userInterests', user.interests);
+    renderTags('userLifestyle', user.lifestyle);
+    renderTags('userGoals', user.goals);
+    renderTags('userValues', user.values);
+}
 
-    const valuesContainer = document.getElementById('userValues');
-    if (valuesContainer) {
-        valuesContainer.innerHTML = user.values?.map(value => 
-            `<span class="tag">${value}</span>`
-        ).join('') || 'Chưa cập nhật';
-    }
+async function loadAllFriends(userId) {
+    try {
+        const response = await fetch(`${API_URL}/matches/friends/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
 
-    const connectBtn = document.getElementById('connectBtn');
-    if (connectBtn) {
-        connectBtn.onclick = () => sendMatchRequest(user._id);
-    }
-
-    const messageBtn = document.getElementById('messageBtn');
-    if (messageBtn) {
-        messageBtn.onclick = () => {
-            window.location.href = `chat.html?userId=${user._id}`;
-        };
+        if (response.ok) {
+            allFriends = await response.json();
+            displayFriendsPage(currentFriendsPage);
+            updateNavigationButtons();
+        }
+    } catch (error) {
+        console.error('Error loading friends:', error);
     }
 }
 
-document.addEventListener('DOMContentLoaded', loadUserProfile); 
+function displayFriendsPage(page) {
+    const grid = document.getElementById('friendsPreviewGrid');
+    if (!grid) return;
+
+    const start = page * friendsPerPage;
+    const end = start + friendsPerPage;
+    const friendsToShow = allFriends.slice(start, end);
+
+    grid.innerHTML = '';
+
+    if (friendsToShow.length === 0) {
+        grid.innerHTML = '<p class="no-friends-message">Chưa có bạn bè</p>';
+        return;
+    }
+
+    friendsToShow.forEach((friend, index) => {
+        const friendPreview = document.createElement('div');
+        friendPreview.className = 'friend-preview';
+        friendPreview.style.setProperty('--index', index);
+        friendPreview.innerHTML = `
+            <img 
+                src="${friend.avatar || DEFAULT_AVATAR}" 
+                alt="${friend.name}" 
+                class="friend-preview-avatar"
+                onclick="viewFriendProfile('${friend._id}')"
+            >
+            <div class="friend-preview-name">${friend.name}</div>
+        `;
+        grid.appendChild(friendPreview);
+    });
+}
+
+function navigateFriends(direction) {
+    if (direction === 'next' && (currentFriendsPage + 1) * friendsPerPage < allFriends.length) {
+        currentFriendsPage++;
+    } else if (direction === 'prev' && currentFriendsPage > 0) {
+        currentFriendsPage--;
+    }
+    
+    displayFriendsPage(currentFriendsPage);
+    updateNavigationButtons();
+}
+
+function updateNavigationButtons() {
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentFriendsPage === 0;
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = (currentFriendsPage + 1) * friendsPerPage >= allFriends.length;
+    }
+}
+
+function viewFriendProfile(userId) {
+    window.location.href = `user-profile.html?id=${userId}`;
+}
+
+// Đóng modal khi click bên ngoài
+window.onclick = function(event) {
+    const modal = document.getElementById('friendsModal');
+    if (event.target === modal) {
+        closeFriendsModal();
+    }
+}
+
+// Khởi tạo khi trang load
+document.addEventListener('DOMContentLoaded', loadUserProfile);
+
+// Export các hàm cần thiết để sử dụng trong HTML
+window.navigateFriends = navigateFriends;
+window.viewFriendProfile = viewFriendProfile;
+window.renderTags = renderTags; 

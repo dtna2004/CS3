@@ -59,18 +59,26 @@ async function register(userData) {
 }
 
 async function login(credentials) {
-    const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Lỗi đăng nhập');
+    try {
+        const response = await fetch(`${window.API_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Đăng nhập thất bại');
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Login error:', error);
+        throw error;
     }
-    return data;
 }
 
 if (document.getElementById('registerForm')) {
@@ -112,7 +120,6 @@ if (document.getElementById('loginForm')) {
             if (data.token) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userId', data.userId);
-                await getUserLocation();
                 window.location.href = 'profile.html';
             } else {
                 alert('Đăng nhập thất bại');

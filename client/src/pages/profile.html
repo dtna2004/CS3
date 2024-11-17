@@ -60,12 +60,8 @@
             <h1 id="userName">Tên người dùng</h1>
             <div class="quick-stats">
                 <div class="stat-item">
-                    <span class="stat-label">Lượt thích</span>
-                    <span class="stat-value">128</span>
-                </div>
-                <div class="stat-item">
                     <span class="stat-label">Bạn bè</span>
-                    <span class="stat-value">45</span>
+                    <span class="stat-value">0</span>
                 </div>
             </div>
         </div>
@@ -111,6 +107,34 @@
                 <h2><i class="section-icon">💝</i> Giá trị sống</h2>
                 <div id="userValues" class="tags-container"></div>
             </div>
+
+            <div class="profile-section friends">
+                <h2>
+                    <i class="section-icon">👥</i>
+                    Bạn bè
+                </h2>
+                <div class="friends-preview">
+                    <div class="friends-count">
+                        <span class="count-value" id="friendCount">0</span>
+                        <span class="count-label">người bạn</span>
+                    </div>
+                </div>
+                <div class="friends-grid" id="friendsPreviewGrid">
+                    <!-- Friends will be rendered here -->
+                </div>
+                <button class="btn-view-all-friends" onclick="loadFriendsList()">
+                    <i class="btn-icon">👥</i>
+                    Xem tất cả bạn bè
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="friendsModal" class="friends-modal">
+        <div class="friends-modal-content">
+            <button class="close-modal" onclick="closeFriendsModal()">×</button>
+            <h2 class="modal-title">Danh sách bạn bè</h2>
+            <div id="friendsList" class="friends-list"></div>
         </div>
     </div>
 </body>

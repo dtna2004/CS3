@@ -59,9 +59,12 @@
                 <img src="../images/default-avatar.png" alt="Avatar" id="chatUserAvatar">
                 <div class="user-info">
                     <h3 id="chatUserName">Chọn người để chat</h3>
-                    <span class="user-status">Trực tuyến</span>
+                    <span class="user-status" id="userStatus" style="display: none;">Trực tuyến</span>
                 </div>
-                <div class="header-actions">
+                <div class="header-actions" style="display: none;" id="chatControls">
+                    <button class="btn-video-call" onclick="startVideoCall()">
+                        <i class="action-icon">📹</i>
+                    </button>
                     <button class="btn-view-profile" onclick="viewProfile()">
                         <i class="action-icon">👤</i>
                     </button>
@@ -77,7 +80,60 @@
         </div>
     </div>
 
+    <!-- Video Call Modal -->
+    <div id="videoCallModal" class="video-call-modal" style="display: none;">
+        <div class="video-container">
+            <video id="localVideo" class="video-box" autoplay muted></video>
+            <video id="remoteVideo" class="video-box" autoplay></video>
+        </div>
+        <div class="video-controls">
+            <button class="video-control-btn" onclick="videoCallService.toggleAudio()">
+                <i class="btn-icon">🎤</i>
+                <span>Tắt tiếng</span>
+            </button>
+            <button class="video-control-btn" onclick="videoCallService.toggleVideo()">
+                <i class="btn-icon">📹</i>
+                <span>Tắt camera</span>
+            </button>
+            <button class="video-control-btn end-call" onclick="videoCallService.endCall()">
+                <i class="btn-icon">📞</i>
+                <span>Kết thúc</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Incoming Call Modal -->
+    <div id="incomingCallModal" class="incoming-call-modal" style="display: none;">
+        <div class="incoming-call-content">
+            <h3>Cuộc gọi đến từ <span id="callerName"></span></h3>
+            <div class="incoming-call-actions">
+                <button onclick="videoCallService.answerCall()" class="accept-call">
+                    <i class="btn-icon">📞</i>
+                    Trả lời
+                </button>
+                <button onclick="videoCallService.rejectCall()" class="reject-call">
+                    <i class="btn-icon">❌</i>
+                    Từ chối
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waiting Call Modal -->
+    <div id="waitingCallModal" class="waiting-call-modal" style="display: none;">
+        <div class="waiting-call-content">
+            <div class="spinner"></div>
+            <h3>Đang chờ trả lời...</h3>
+            <button onclick="videoCallService.endCall()" class="cancel-call-btn">
+                <i class="btn-icon">❌</i>
+                Hủy cuộc gọi
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="../js/constants.js"></script>
+    <script src="../js/services/videoCall.js"></script>
     <script src="../js/chat.js"></script>
     <script src="../js/notificationBadge.js"></script>
     <script src="../js/common.js"></script>

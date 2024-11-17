@@ -1,9 +1,8 @@
-const API_URL = 'http://localhost:3000/api';
-const CLOUDINARY_URL='cloudinary://894487861293555:n9Xuwgk7KLqSwcIIEHBT1C8izgQ@djkesszqc';
-const CLOUDINARY_UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET';
-const DEFAULT_AVATAR = '../images/default-avatar.png';
+window.API_URL = 'http://localhost:3000/api';
+window.SOCKET_URL = 'http://localhost:3000';
+window.DEFAULT_AVATAR = '../images/default-avatar.png';
 
-const OPTIONS = {
+window.OPTIONS = {
     occupations: [
         'Kỹ sư phần mềm', 'Bác sĩ', 'Giáo viên', 'Luật sư', 'Nhà thiết kế đồ họa',
         'Kỹ sư xây dựng', 'Nhà báo', 'Kiến trúc sư', 'Chuyên viên marketing',
@@ -41,23 +40,23 @@ const OPTIONS = {
     ]
 };
 
-const MATCH_STATUS = {
+window.MATCH_STATUS = {
     PENDING: 'pending',
     ACCEPTED: 'accepted',
     REJECTED: 'rejected',
     BLOCKED: 'blocked'
 };
 
-const GENDER = {
+window.GENDER = {
     MALE: 'male',
     FEMALE: 'female',
     OTHER: 'other'
 };
 
-const MESSAGE_REFRESH_INTERVAL = 5000; // 5 seconds
-const NOTIFICATION_REFRESH_INTERVAL = 30000; // 30 seconds
+window.MESSAGE_REFRESH_INTERVAL = 5000; // 5 seconds
+window.NOTIFICATION_REFRESH_INTERVAL = 30000; // 30 seconds
 
-const ERROR_MESSAGES = {
+window.ERROR_MESSAGES = {
     LOGIN_FAILED: 'Đăng nhập thất bại',
     REGISTER_FAILED: 'Đăng ký thất bại',
     NETWORK_ERROR: 'Lỗi kết nối mạng',
@@ -65,7 +64,7 @@ const ERROR_MESSAGES = {
     UNAUTHORIZED: 'Vui lòng đăng nhập lại'
 };
 
-const SUCCESS_MESSAGES = {
+window.SUCCESS_MESSAGES = {
     PROFILE_UPDATED: 'Cập nhật thông tin thành công',
     MATCH_SENT: 'Đã gửi lời mời kết nối',
     MATCH_ACCEPTED: 'Đã chấp nhận lời mời kết nối',

@@ -49,13 +49,19 @@
                     Nhắn tin
                 </button>
             </div>
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Bạn bè</span>
+                    <span class="stat-value">0</span>
+                </div>
+            </div>
         </div>
 
         <div class="profile-content">
             <div class="profile-section basic-info">
                 <h2>
                     <i class="section-icon">👤</i>
-                    Thông tin cơ bản
+                    Thông tin c bản
                 </h2>
                 <div class="info-grid">
                     <div class="info-item">
@@ -107,6 +113,33 @@
                 </h2>
                 <div id="userValues" class="tags-container"></div>
             </div>
+
+            <div class="profile-section friends">
+                <h2>
+                    <i class="section-icon">👥</i>
+                    Bạn bè
+                    <span class="friend-count-label">(<span id="friendCount">0</span> người bạn)</span>
+                </h2>
+                <div class="friends-grid-container">
+                    <button class="nav-btn prev-btn" onclick="navigateFriends('prev')">
+                        <i class="btn-icon">←</i>
+                    </button>
+                    <div class="friends-grid" id="friendsPreviewGrid">
+                        <!-- Friends will be rendered here -->
+                    </div>
+                    <button class="nav-btn next-btn" onclick="navigateFriends('next')">
+                        <i class="btn-icon">→</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="friendsModal" class="friends-modal">
+        <div class="friends-modal-content">
+            <button class="close-modal" onclick="closeFriendsModal()">×</button>
+            <h2 class="modal-title">Danh sách bạn bè</h2>
+            <div id="friendsList" class="friends-list"></div>
         </div>
     </div>
 </body>

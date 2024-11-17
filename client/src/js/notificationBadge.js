@@ -20,7 +20,7 @@ async function checkNotifications() {
 
 async function getUnreadMessageCount() {
     try {
-        const response = await fetch(`${API_URL}/messages/unread/count`, {
+        const response = await fetch(`${window.API_URL}/messages/unread/count`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -36,7 +36,7 @@ async function getUnreadMessageCount() {
 
 async function getUnreadMatchRequestCount() {
     try {
-        const response = await fetch(`${API_URL}/matches/pending/count`, {
+        const response = await fetch(`${window.API_URL}/matches/pending/count`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -72,5 +72,5 @@ function updateNotificationBadges(messageCount, matchRequestCount) {
 
 // Khởi tạo kiểm tra thông báo
 checkNotifications();
-// Kiểm tra thường xuyên hơn
-setInterval(checkNotifications, 5000); // Kiểm tra mỗi 5 giây
+// Kiểm tra thường xuyên
+setInterval(checkNotifications, 5000);

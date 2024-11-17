@@ -1,91 +1,234 @@
 class VideoCallService {
     constructor() {
-        this.socket = io(SOCKET_URL);
+        if (!this.checkWebRTCSupport()) {
+            alert('Trình duyệt của bạn không hỗ trợ cuộc gọi video');
+            return;
+        }
+        if (typeof io === 'undefined') {
+            console.error('Socket.IO is not loaded');
+            return;
+        }
+        this.socket = io(window.SOCKET_URL);
         this.localStream = null;
         this.remoteStream = null;
         this.peerConnection = null;
         this.currentCall = null;
 
-        // ICE servers configuration
-        this.configuration = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                {
-                    urls: process.env.TURN_SERVER,
-                    username: process.env.TURN_USERNAME,
-                    credential: process.env.TURN_PASSWORD
-                }
-            ]
-        };
-
-        this.initializeSocketListeners();
-    }
-
-    async initializeMedia() {
-        try {
-            this.localStream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true
-            });
-            return this.localStream;
-        } catch (error) {
-            console.error('Error accessing media devices:', error);
-            throw error;
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            this.socket.emit('register-user', userId);
         }
-    }
 
-    initializeSocketListeners() {
-        this.socket.on('incoming-call', async (data) => {
-            try {
-                const stream = await this.initializeMedia();
-                document.getElementById('localVideo').srcObject = stream;
-
-                this.currentCall = {
-                    from: data.from,
-                    name: data.name,
-                    signal: data.signal
-                };
-
-                this.showIncomingCallModal(data.name);
-            } catch (error) {
-                console.error('Error handling incoming call:', error);
-            }
+        this.socket.on('user-online', (userId) => {
+            console.log('User online:', userId);
+            this.updateUserStatus(userId, true);
         });
 
-        this.socket.on('call-accepted', (signal) => {
-            this.connectPeer(signal);
+        this.socket.on('user-offline', (userId) => {
+            console.log('User offline:', userId);
+            this.updateUserStatus(userId, false);
+        });
+
+        this.socket.on('incoming-call', async (data) => {
+            console.log('Incoming call from:', data);
+            this.currentCall = data;
+            this.showIncomingCallModal(data.name);
+        });
+
+        this.socket.on('call-accepted', async (data) => {
+            console.log('Call accepted:', data);
+            try {
+                await this.peerConnection.setRemoteDescription(
+                    new RTCSessionDescription(data.signal)
+                );
+                this.hideWaitingModal();
+                this.showVideoCallModal();
+            } catch (error) {
+                console.error('Error setting remote description:', error);
+            }
         });
 
         this.socket.on('call-rejected', () => {
+            alert('Cuộc gọi đã bị từ chối');
+            this.hideWaitingModal();
             this.endCall();
-            alert('Cuộc gọi bị từ chối');
+        });
+
+        this.socket.on('call-failed', (data) => {
+            alert(data.message || 'Không thể kết nối với người dùng');
+            this.hideWaitingModal();
+            this.endCall();
+        });
+
+        this.socket.on('ice-candidate', async (candidate) => {
+            try {
+                if (this.peerConnection) {
+                    await this.peerConnection.addIceCandidate(
+                        new RTCIceCandidate(candidate)
+                    );
+                }
+            } catch (error) {
+                console.error('Error adding received ice candidate:', error);
+            }
         });
 
         this.socket.on('call-ended', () => {
+            alert('Cuộc gọi đã kết thúc');
             this.endCall();
         });
+    }
 
-        this.socket.on('ice-candidate', (candidate) => {
-            if (this.peerConnection) {
-                this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    checkWebRTCSupport() {
+        return !!(navigator.mediaDevices &&
+            navigator.mediaDevices.getUserMedia &&
+            window.RTCPeerConnection);
+    }
+
+    async getIceServers() {
+        try {
+            const response = await fetch(`${window.API_URL}/video-call/ice-servers`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            if (!response.ok) throw new Error('Failed to get ICE servers');
+            const data = await response.json();
+            return data.iceServers;
+        } catch (error) {
+            console.error('Error getting ICE servers:', error);
+            return [{
+                urls: [
+                    'stun:stun.l.google.com:19302',
+                    'stun:stun1.l.google.com:19302'
+                ]
+            }];
+        }
+    }
+
+    async getMediaStream(withVideo = true) {
+        const constraints = {
+            audio: true,
+            video: withVideo ? {
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            } : false
+        };
+
+        try {
+            return await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (error) {
+            console.error('Media error:', error);
+            
+            if (error.name === 'NotAllowedError') {
+                throw new Error('Vui lòng cho phép truy cập camera và microphone');
+            } else if (error.name === 'NotFoundError') {
+                throw new Error('Không tìm thấy camera hoặc microphone');
+            } else if (error.name === 'NotReadableError') {
+                throw new Error('Camera hoặc microphone đang được sử dụng bởi ứng dụng khác');
+            } else {
+                throw error;
             }
-        });
+        }
+    }
+
+    async initializePeerConnection() {
+        try {
+            const iceServers = await this.getIceServers();
+            this.peerConnection = new RTCPeerConnection({ iceServers });
+            
+            this.peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    this.socket.emit('ice-candidate', {
+                        candidate: event.candidate,
+                        to: this.currentCall?.to || this.currentCall?.from
+                    });
+                }
+            };
+
+            this.peerConnection.ontrack = (event) => {
+                this.remoteStream = event.streams[0];
+                const remoteVideo = document.getElementById('remoteVideo');
+                if (remoteVideo) {
+                    remoteVideo.srcObject = this.remoteStream;
+                }
+            };
+
+            this.peerConnection.oniceconnectionstatechange = () => {
+                console.log('ICE connection state:', this.peerConnection.iceConnectionState);
+                if (this.peerConnection.iceConnectionState === 'disconnected') {
+                    this.endCall();
+                }
+            };
+
+            this.peerConnection.onicegatheringstatechange = () => {
+                console.log('ICE gathering state:', this.peerConnection.iceGatheringState);
+            };
+
+            this.peerConnection.onsignalingstatechange = () => {
+                console.log('Signaling state:', this.peerConnection.signalingState);
+            };
+        } catch (error) {
+            console.error('Error initializing peer connection:', error);
+            throw new Error('Không thể khởi tạo kết nối');
+        }
     }
 
     async startCall(userId, userName) {
         try {
-            const stream = await this.initializeMedia();
-            document.getElementById('localVideo').srcObject = stream;
+            const isOnline = await this.checkUserOnline(userId);
+            if (!isOnline) {
+                alert('Người dùng hiện không trực tuyến');
+                return;
+            }
 
-            this.peerConnection = new RTCPeerConnection(this.configuration);
-            this.setupPeerConnectionHandlers();
+            try {
+                this.localStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: true
+                });
+            } catch (mediaError) {
+                console.error('Media error:', mediaError);
+                // Thử lại với độ phân giải thấp hơn
+                try {
+                    this.localStream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            width: { ideal: 640 },
+                            height: { ideal: 480 }
+                        },
+                        audio: true
+                    });
+                } catch (fallbackError) {
+                    // Nếu vẫn lỗi, thử chỉ với audio
+                    if (confirm('Không thể truy cập camera. Bạn có muốn tiếp tục với cuộc gọi âm thanh?')) {
+                        this.localStream = await navigator.mediaDevices.getUserMedia({
+                            video: false,
+                            audio: true
+                        });
+                    } else {
+                        throw new Error('Không thể truy cập thiết bị media');
+                    }
+                }
+            }
+            
+            document.getElementById('localVideo').srcObject = this.localStream;
+            
+            await this.initializePeerConnection();
 
-            stream.getTracks().forEach(track => {
-                this.peerConnection.addTrack(track, stream);
+            this.localStream.getTracks().forEach(track => {
+                this.peerConnection.addTrack(track, this.localStream);
             });
 
             const offer = await this.peerConnection.createOffer();
             await this.peerConnection.setLocalDescription(offer);
+
+            this.currentCall = {
+                to: userId,
+                from: this.socket.id,
+                name: userName
+            };
 
             this.socket.emit('call-user', {
                 userToCall: userId,
@@ -93,9 +236,12 @@ class VideoCallService {
                 from: this.socket.id,
                 name: userName
             });
+
+            this.showWaitingModal();
         } catch (error) {
             console.error('Error starting call:', error);
-            throw error;
+            alert('Không thể bắt đầu cuộc gọi: ' + error.message);
+            this.endCall();
         }
     }
 
@@ -103,8 +249,41 @@ class VideoCallService {
         try {
             if (!this.currentCall) return;
 
-            this.peerConnection = new RTCPeerConnection(this.configuration);
-            this.setupPeerConnectionHandlers();
+            try {
+                this.localStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: true
+                });
+            } catch (mediaError) {
+                console.error('Media error:', mediaError);
+                // Thử lại với độ phân giải thấp hơn
+                try {
+                    this.localStream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            width: { ideal: 640 },
+                            height: { ideal: 480 }
+                        },
+                        audio: true
+                    });
+                } catch (fallbackError) {
+                    // Nếu vẫn lỗi, thử chỉ với audio
+                    if (confirm('Không thể truy cập camera. Bạn có muốn tiếp tục với cuộc gọi âm thanh?')) {
+                        this.localStream = await navigator.mediaDevices.getUserMedia({
+                            video: false,
+                            audio: true
+                        });
+                    } else {
+                        throw new Error('Không thể truy cập thiết bị media');
+                    }
+                }
+            }
+            
+            document.getElementById('localVideo').srcObject = this.localStream;
+            
+            await this.initializePeerConnection();
 
             this.localStream.getTracks().forEach(track => {
                 this.peerConnection.addTrack(track, this.localStream);
@@ -121,9 +300,13 @@ class VideoCallService {
                 signal: answer,
                 to: this.currentCall.from
             });
+
+            this.hideIncomingCallModal();
+            this.showVideoCallModal();
         } catch (error) {
             console.error('Error answering call:', error);
-            throw error;
+            alert('Không thể trả lời cuộc gọi: ' + error.message);
+            this.endCall();
         }
     }
 
@@ -131,10 +314,11 @@ class VideoCallService {
         if (!this.currentCall) return;
 
         this.socket.emit('reject-call', {
-            from: this.currentCall.from
+            to: this.currentCall.from
         });
 
-        this.endCall();
+        this.hideIncomingCallModal();
+        this.currentCall = null;
     }
 
     endCall() {
@@ -158,34 +342,12 @@ class VideoCallService {
 
         if (this.currentCall) {
             this.socket.emit('end-call', {
-                to: this.currentCall.from
+                to: this.currentCall.from || this.currentCall.to
             });
             this.currentCall = null;
         }
 
         this.hideVideoCallModal();
-    }
-
-    setupPeerConnectionHandlers() {
-        this.peerConnection.ontrack = (event) => {
-            this.remoteStream = event.streams[0];
-            document.getElementById('remoteVideo').srcObject = this.remoteStream;
-        };
-
-        this.peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-                this.socket.emit('ice-candidate', {
-                    candidate: event.candidate,
-                    to: this.currentCall.from
-                });
-            }
-        };
-
-        this.peerConnection.oniceconnectionstatechange = () => {
-            if (this.peerConnection.iceConnectionState === 'disconnected') {
-                this.endCall();
-            }
-        };
     }
 
     toggleAudio() {
@@ -211,60 +373,77 @@ class VideoCallService {
     }
 
     showVideoCallModal() {
-        const modal = document.createElement('div');
-        modal.className = 'video-call-modal active';
-        modal.innerHTML = `
-            <div class="video-container">
-                <video id="localVideo" class="video-box" autoplay muted></video>
-                <video id="remoteVideo" class="video-box" autoplay></video>
-            </div>
-            <div class="video-controls">
-                <button class="video-control-btn" onclick="videoCallService.toggleAudio()">
-                    <i class="btn-icon">🎤</i>
-                    <span>Tắt tiếng</span>
-                </button>
-                <button class="video-control-btn" onclick="videoCallService.toggleVideo()">
-                    <i class="btn-icon">📹</i>
-                    <span>Tắt camera</span>
-                </button>
-                <button class="video-control-btn end-call" onclick="videoCallService.endCall()">
-                    <i class="btn-icon">📞</i>
-                    <span>Kết thúc</span>
-                </button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-
-    showIncomingCallModal(callerName) {
-        const modal = document.createElement('div');
-        modal.className = 'incoming-call-modal';
-        modal.innerHTML = `
-            <div class="incoming-call-content">
-                <h3>Cuộc gọi đến từ ${callerName}</h3>
-                <div class="incoming-call-actions">
-                    <button onclick="videoCallService.answerCall()" class="accept-call">
-                        <i class="btn-icon">📞</i>
-                        Trả lời
-                    </button>
-                    <button onclick="videoCallService.rejectCall()" class="reject-call">
-                        <i class="btn-icon">❌</i>
-                        Từ chối
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
+        const modal = document.getElementById('videoCallModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            const statusDiv = document.createElement('div');
+            statusDiv.id = 'callStatus';
+            statusDiv.className = 'call-status';
+            statusDiv.textContent = 'Đang kết nối...';
+            modal.appendChild(statusDiv);
+        }
     }
 
     hideVideoCallModal() {
-        const modal = document.querySelector('.video-call-modal');
-        if (modal) modal.remove();
-        
-        const incomingModal = document.querySelector('.incoming-call-modal');
-        if (incomingModal) incomingModal.remove();
+        const modal = document.getElementById('videoCallModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    showIncomingCallModal(callerName) {
+        const modal = document.getElementById('incomingCallModal');
+        const callerNameSpan = document.getElementById('callerName');
+        if (modal && callerNameSpan) {
+            callerNameSpan.textContent = callerName;
+            modal.style.display = 'flex';
+        }
+    }
+
+    hideIncomingCallModal() {
+        const modal = document.getElementById('incomingCallModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    showWaitingModal() {
+        const modal = document.getElementById('waitingCallModal');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    hideWaitingModal() {
+        const modal = document.getElementById('waitingCallModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    async checkUserOnline(userId) {
+        return new Promise((resolve) => {
+            this.socket.emit('check-user-online', userId);
+            this.socket.once('user-online-status', (data) => {
+                resolve(data.isOnline);
+            });
+        });
+    }
+
+    updateUserStatus(userId, isOnline) {
+        const statusElement = document.querySelector(`[data-user-id="${userId}"] .user-status`);
+        if (statusElement) {
+            statusElement.textContent = isOnline ? 'Trực tuyến' : 'Không trực tuyến';
+            statusElement.classList.toggle('online', isOnline);
+        }
+    }
+
+    updateCallStatus(message) {
+        const statusDiv = document.getElementById('callStatus');
+        if (statusDiv) {
+            statusDiv.textContent = message;
+        }
     }
 }
 
-const videoCallService = new VideoCallService();
-export default videoCallService; 
+window.videoCallService = new VideoCallService(); 

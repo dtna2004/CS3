@@ -1,3 +1,6 @@
+//import { API_URL, DEFAULT_AVATAR } from './constants.js';
+//import videoCallService from './services/videoCall.js';
+
 let currentChatUser = null;
 let currentPage = 1;
 let isLoadingMessages = false;
@@ -6,35 +9,67 @@ let messageInterval = null;
 
 async function loadMatches() {
     try {
+        console.log('Loading matches...');
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            window.location.href = 'login.html';
+            return;
+        }
+
         const response = await fetch(`${API_URL}/matches`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
         });
 
-        if (response.ok) {
-            const matches = await response.json();
-            const matchesWithLastMessage = await Promise.all(matches.map(async match => {
-                const otherUserId = match.sender._id === localStorage.getItem('userId') 
-                    ? match.receiver._id 
-                    : match.sender._id;
-                
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+                return;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const matches = await response.json();
+        console.log('Matches loaded:', matches);
+        
+        const acceptedMatches = matches.filter(match => match.status === 'accepted');
+        
+        const matchesWithLastMessage = await Promise.all(acceptedMatches.map(async match => {
+            const otherUserId = match.sender._id === localStorage.getItem('userId') 
+                ? match.receiver._id 
+                : match.sender._id;
+            
+            try {
                 const messageResponse = await fetch(`${API_URL}/messages/${otherUserId}/last`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
                 });
                 
                 if (messageResponse.ok) {
                     const lastMessage = await messageResponse.json();
                     return { ...match, lastMessage };
                 }
-                return match;
-            }));
-            renderChatUsers(matchesWithLastMessage);
-        }
+            } catch (error) {
+                console.error('Error loading last message:', error);
+            }
+            return match;
+        }));
+
+        renderChatUsers(matchesWithLastMessage);
     } catch (error) {
         console.error('Error loading matches:', error);
+        const errorMessage = error.response ? await error.response.text() : error.message;
+        console.error('Detailed error:', errorMessage);
         alert('Có lỗi xảy ra khi tải danh sách chat');
     }
 }
@@ -44,6 +79,15 @@ function renderChatUsers(matches) {
     if (!container) return;
 
     container.innerHTML = '';
+
+    if (!matches || matches.length === 0) {
+        container.innerHTML = `
+            <div class="no-chats">
+                <i class="empty-icon">💬</i>
+                <p>Chưa có cuộc trò chuyện nào</p>
+            </div>`;
+        return;
+    }
 
     matches.forEach(match => {
         const otherUser = match.sender._id === localStorage.getItem('userId') 
@@ -61,22 +105,22 @@ function renderChatUsers(matches) {
         userDiv.innerHTML = `
             <img src="${otherUser.avatar || DEFAULT_AVATAR}" alt="Avatar" class="clickable-avatar">
             <div class="chat-user-info">
-                <h4>${otherUser.name}</h4>
+                <h4>${otherUser.name || 'Người dùng'}</h4>
+                <div class="user-status">Đang kiểm tra...</div>
                 <p class="last-message ${lastMessageClass}">
                     ${match.lastMessage ? match.lastMessage.content : 'Chưa có tin nhắn'}
                 </p>
             </div>
         `;
 
-        userDiv.querySelector('.clickable-avatar').addEventListener('click', () => {
-            window.location.href = `user-profile.html?id=${otherUser._id}`;
-        });
-        
-        userDiv.querySelector('.chat-user-info').addEventListener('click', () => {
+        userDiv.addEventListener('click', () => {
             selectChatUser(otherUser);
         });
 
         container.appendChild(userDiv);
+
+        // Kiểm tra trạng thái online
+        window.videoCallService.checkUserOnline(otherUser._id);
     });
 }
 
@@ -87,6 +131,9 @@ function selectChatUser(user) {
     
     document.getElementById('chatUserAvatar').src = user.avatar || DEFAULT_AVATAR;
     document.getElementById('chatUserName').textContent = user.name;
+    
+    document.getElementById('userStatus').style.display = 'block';
+    document.getElementById('chatControls').style.display = 'flex';
 
     document.querySelectorAll('.chat-user').forEach(el => {
         el.classList.remove('active');
@@ -217,6 +264,18 @@ function viewProfile() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Chat page loaded');
+    
+    // Đảm bảo videoCallService được khởi tạo với userId
+    if (window.videoCallService && localStorage.getItem('userId')) {
+        window.videoCallService.socket.emit('register-user', localStorage.getItem('userId'));
+    }
+    
+    // Ẩn controls khi mới load trang
+    document.getElementById('userStatus').style.display = 'none';
+    document.getElementById('chatControls').style.display = 'none';
+    
+    // Load danh sách chat
     await loadMatches();
     
     // Setup message input
@@ -226,15 +285,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Check URL params
+    // Check URL params để mở chat với user cụ thể
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId');
     if (userId) {
         const matches = document.querySelectorAll('.chat-user');
         matches.forEach(match => {
             if (match.dataset.userId === userId) {
-                match.querySelector('.chat-user-info').click();
+                match.click();
             }
         });
     }
 });
+
+async function startVideoCall() {
+    if (!currentChatUser) {
+        alert('Vui lòng chọn người để gọi');
+        return;
+    }
+
+    try {
+        await videoCallService.startCall(currentChatUser._id, currentChatUser.name);
+        videoCallService.showVideoCallModal();
+    } catch (error) {
+        console.error('Error starting video call:', error);
+        alert('Không thể bắt đầu cuộc gọi video');
+    }
+}
+
+// Export các functions cần thiết cho window object
+window.startVideoCall = startVideoCall;
+window.sendMessage = sendMessage;
+window.viewProfile = viewProfile;

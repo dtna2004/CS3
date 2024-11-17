@@ -220,4 +220,275 @@
 .btn-connect:hover, .btn-message:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 107, 26, 0.4);
+}
+
+.quick-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 107, 26, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 107, 26, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 220px;
+    margin: 20px auto;
+}
+
+.quick-stats:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 107, 26, 0.2);
+    background: rgba(255, 107, 26, 0.15);
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    position: relative;
+}
+
+.stat-label {
+    display: block;
+    color: var(--halloween-orange);
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 2em;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 107, 26, 0.5);
+    display: block;
+    transition: all 0.3s ease;
+    animation: countUp 0.5s ease-out forwards;
+}
+
+@keyframes countUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.stat-item::before {
+    content: '👥';
+    font-size: 1.5em;
+    display: block;
+    margin-bottom: 5px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+    padding: 10px 0;
+}
+
+.friend-preview {
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.friend-preview:hover {
+    transform: translateY(-3px);
+}
+
+.friend-preview-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid var(--halloween-orange);
+    object-fit: cover;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.friend-preview-avatar:hover {
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(255, 107, 26, 0.5);
+}
+
+.friend-preview-name {
+    font-size: 0.9em;
+    color: #fff;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+}
+
+.friend-preview:hover .friend-preview-name {
+    color: var(--halloween-orange);
+}
+
+.btn-view-all-friends {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(255, 107, 26, 0.1);
+    color: var(--halloween-orange);
+    border: 1px solid var(--halloween-orange);
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.btn-view-all-friends:hover {
+    background: var(--halloween-orange);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 26, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .friends-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 10px;
+    }
+
+    .friend-preview-avatar {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Animation for friend previews */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.friend-preview {
+    animation: fadeInUp 0.3s ease forwards;
+    animation-delay: calc(var(--index) * 0.1s);
+}
+
+.friend-count-label {
+    font-size: 0.8em;
+    color: var(--halloween-orange);
+    margin-left: 10px;
+}
+
+.friends-grid-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.nav-btn {
+    background: rgba(255, 107, 26, 0.1);
+    border: 1px solid var(--halloween-orange);
+    color: var(--halloween-orange);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2em;
+}
+
+.nav-btn:hover {
+    background: var(--halloween-orange);
+    color: white;
+    transform: scale(1.1);
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.friends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.friend-preview {
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.friend-preview-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid var(--halloween-orange);
+    object-fit: cover;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.friend-preview-avatar:hover {
+    border-color: #fff;
+    box-shadow: 0 0 15px rgba(255, 107, 26, 0.5);
+    transform: scale(1.1);
+}
+
+.friend-preview-name {
+    font-size: 0.9em;
+    color: #fff;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .friends-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 10px;
+    }
+
+    .friend-preview-avatar {
+        width: 70px;
+        height: 70px;
+    }
+
+    .nav-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+    }
 } 

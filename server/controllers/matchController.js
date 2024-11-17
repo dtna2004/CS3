@@ -60,8 +60,15 @@ exports.getMatches = async (req, res) => {
             status: 'accepted'
         }).populate('sender receiver', 'name avatar');
         
-        res.json(matches);
+        const formattedMatches = matches.map(match => ({
+            ...match.toObject(),
+            otherUser: match.sender._id.toString() === req.userId ? 
+                match.receiver : match.sender
+        }));
+        
+        res.json(formattedMatches);
     } catch (error) {
+        console.error('Get matches error:', error);
         res.status(500).json({ message: 'Lỗi server' });
     }
 };

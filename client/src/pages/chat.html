@@ -68,10 +68,17 @@
                     <button class="btn-view-profile" onclick="viewProfile()">
                         <i class="action-icon">👤</i>
                     </button>
+                    <button class="btn-suggest-places" onclick="suggestPlaces()">
+                        <i class="action-icon">🍽️</i>
+                        <span>Gợi ý địa điểm</span>
+                    </button>
                 </div>
             </div>
             <div id="messagesContainer" class="messages-container"></div>
             <div class="message-input">
+                <button id="emojiButton" class="emoji-button">
+                    <i class="emoji-icon">😊</i>
+                </button>
                 <input type="text" id="messageInput" placeholder="Nhập tin nhắn...">
                 <button id="sendMessageBtn" onclick="sendMessage()">
                     <i class="send-icon">📨</i>
@@ -131,11 +138,92 @@
         </div>
     </div>
 
+    <!-- Emoji Picker -->
+    <div id="emojiPicker" class="emoji-picker" style="display: none;">
+        <div class="emoji-list">
+            <!-- Emoji biểu cảm -->
+            <span class="emoji-item" data-emoji="😊">😊</span>
+            <span class="emoji-item" data-emoji="😂">😂</span>
+            <span class="emoji-item" data-emoji="🥰">🥰</span>
+            <span class="emoji-item" data-emoji="😍">😍</span>
+            <span class="emoji-item" data-emoji="😘">😘</span>
+            <span class="emoji-item" data-emoji="😜">😜</span>
+            <span class="emoji-item" data-emoji="🤗">🤗</span>
+            <span class="emoji-item" data-emoji="🤔">🤔</span>
+            
+            <!-- Emoji trái tim -->
+            <span class="emoji-item" data-emoji="❤️">❤️</span>
+            <span class="emoji-item" data-emoji="💕">💕</span>
+            <span class="emoji-item" data-emoji="💖">💖</span>
+            <span class="emoji-item" data-emoji="💝">💝</span>
+            <span class="emoji-item" data-emoji="🥺">💓</span>
+            <span class="emoji-item" data-emoji="💗">💗</span>
+            <span class="emoji-item" data-emoji="💘">💘</span>
+            <span class="emoji-item" data-emoji="💞">💞</span>
+
+            <!-- Emoji hành động -->
+            <span class="emoji-item" data-emoji="👋">👋</span>
+            <span class="emoji-item" data-emoji="👍">👍</span>
+            <span class="emoji-item" data-emoji="👏">👏</span>
+            <span class="emoji-item" data-emoji="🙌">🙌</span>
+            <span class="emoji-item" data-emoji="🤝">🤝</span>
+            <span class="emoji-item" data-emoji="✌️">✌️</span>
+            <span class="emoji-item" data-emoji="🤞">🤞</span>
+            <span class="emoji-item" data-emoji="👌">👌</span>
+
+            <!-- Emoji đồ ăn và hoa -->
+            <span class="emoji-item" data-emoji="🍕">🍕</span>
+            <span class="emoji-item" data-emoji="🍜">🍜</span>
+            <span class="emoji-item" data-emoji="🍷">🍷</span>
+            <span class="emoji-item" data-emoji="🍰">🍰</span>
+            <span class="emoji-item" data-emoji="🌹">🌹</span>
+            <span class="emoji-item" data-emoji="🌸">🌸</span>
+            <span class="emoji-item" data-emoji="✨">✨</span>
+            <span class="emoji-item" data-emoji="🌟">🌟</span>
+        </div>
+    </div>
+
+    <!-- Places Suggestion Modal -->
+    <div id="placesSuggestionModal" class="places-modal" style="display: none;">
+        <div class="places-modal-content">
+            <div class="places-modal-header">
+                <h3>Gợi ý địa điểm hẹn hò</h3>
+                <button onclick="closePlacesModal()" class="close-modal">×</button>
+            </div>
+            <div class="places-modal-body">
+                <div class="places-filters">
+                    <select id="placeType">
+                        <option value="restaurant">Nhà hàng</option>
+                        <option value="cafe">Quán café</option>
+                        <option value="bar">Quán bar</option>
+                    </select>
+                    <select id="priceLevel">
+                        <option value="">Mọi mức giá</option>
+                        <option value="1">Giá rẻ</option>
+                        <option value="2">Trung bình</option>
+                        <option value="3">Cao cấp</option>
+                    </select>
+                </div>
+                <div id="placesList" class="places-list"></div>
+                <div id="placesMap" class="places-map"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="../js/constants.js"></script>
     <script src="../js/services/videoCall.js"></script>
     <script src="../js/chat.js"></script>
     <script src="../js/notificationBadge.js"></script>
     <script src="../js/common.js"></script>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            window.location.href = 'login.html';
+        });
+    </script>
 </body>
 </html> 

@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabBtns = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
 
+    // Hiển thị tab đầu tiên khi load trang
+    document.querySelector('.tab-content').classList.add('active');
+    document.querySelector('.tab-btn').classList.add('active');
+
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             // Remove active class from all buttons and contents

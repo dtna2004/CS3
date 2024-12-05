@@ -1,9 +1,9 @@
 {
-  "distance": 0.12,
-  "age": 0.12,
-  "occupation": 0.08,
-  "interests": 0.16,
-  "lifestyle": 0.12,
-  "goals": 0.08,
-  "values": 0.32
+  "age": 0.114,
+  "interests": 0.253,
+  "lifestyle": 0.19,
+  "values": 0.05,
+  "goals": 0.152,
+  "location": 0.19,
+  "occupation": 0.051
 }

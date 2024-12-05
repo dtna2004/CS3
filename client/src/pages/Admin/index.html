@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Dating App</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js cho visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin Dashboard</h1>
+        </header>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab-btn active" data-tab="weights">Weights</button>
+            <button class="tab-btn" data-tab="matrices">Compatibility Matrices</button>
+            <button class="tab-btn" data-tab="data">Data Analysis</button>
+        </div>
+
+        <!-- Weights Section -->
+        <div class="tab-content active" id="weights">
+            <h2>Matching Weights</h2>
+            <div class="weights-container">
+                <div class="weight-slider">
+                    <label for="distance">Distance:</label>
+                    <input type="range" id="distance" min="0" max="100" value="15">
+                    <span class="weight-value">15%</span>
+                </div>
+                <div class="weight-slider">
+                    <label for="age">Age:</label>
+                    <input type="range" id="age" min="0" max="100" value="15">
+                    <span class="weight-value">15%</span>
+                </div>
+                <div class="weight-slider">
+                    <label for="occupation">Occupation:</label>
+                    <input type="range" id="occupation" min="0" max="100" value="10">
+                    <span class="weight-value">10%</span>
+                </div>
+                <div class="weight-slider">
+                    <label for="interests">Interests:</label>
+                    <input type="range" id="interests" min="0" max="100" value="20">
+                    <span class="weight-value">20%</span>
+                </div>
+                <div class="weight-slider">
+                    <label for="lifestyle">Lifestyle:</label>
+                    <input type="range" id="lifestyle" min="0" max="100" value="15">
+                    <span class="weight-value">15%</span>
+                </div>
+                <div class="weight-slider">
+                    <label for="goals">Goals:</label>
+                    <input type="range" id="goals" min="0" max="100" value="15">
+                    <span class="weight-value">15%</span>
+                </div>
+                <div class="weight-slider">
+                    <label for="values">Values:</label>
+                    <input type="range" id="values" min="0" max="100" value="10">
+                    <span class="weight-value">10%</span>
+                </div>
+            </div>
+            <div class="weight-chart">
+                <canvas id="weightChart"></canvas>
+            </div>
+            <button id="saveWeights" class="btn">Save Changes</button>
+        </div>
+
+        <!-- Matrices Section -->
+        <div class="tab-content" id="matrices">
+            <div class="matrix-tabs">
+                <button class="matrix-tab active" data-matrix="occupation">Occupation</button>
+                <button class="matrix-tab" data-matrix="interests">Interests</button>
+                <button class="matrix-tab" data-matrix="lifestyle">Lifestyle</button>
+                <button class="matrix-tab" data-matrix="goals">Goals</button>
+                <button class="matrix-tab" data-matrix="values">Values</button>
+            </div>
+            <div class="matrix-container">
+                <table id="matrixTable" class="matrix-table">
+                    <!-- Matrix will be rendered here -->
+                </table>
+            </div>
+            <div class="matrix-heatmap">
+                <canvas id="heatmapChart"></canvas>
+            </div>
+            <button id="saveMatrix" class="btn">Save Matrix</button>
+        </div>
+
+        <!-- Data Analysis Section -->
+        <div class="tab-content" id="data">
+            <div class="export-section">
+                <h3>Export User Data</h3>
+                <button id="exportCSV" class="btn">Export to CSV</button>
+            </div>
+            <div class="analysis-section">
+                <h3>Matching Analysis</h3>
+                <div class="chart-container">
+                    <canvas id="matchingChart"></canvas>
+                </div>
+                <div class="stats-container">
+                    <!-- Statistics will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/tabs.js"></script>
+    <script src="js/matrix.js"></script>
+    <script src="js/weights.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/analysis.js"></script>
+</body>
+</html>

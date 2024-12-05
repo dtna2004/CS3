@@ -1,0 +1,167 @@
+/* Main container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #333;
+}
+
+/* Tab Navigation */
+.tab-container {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+}
+
+.tab-btn.active {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Weights Section */
+.weights-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.weight-slider {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.weight-slider label {
+    width: 120px;
+    font-weight: bold;
+}
+
+.weight-slider input[type="range"] {
+    flex: 1;
+}
+
+.weight-value {
+    width: 60px;
+    text-align: right;
+}
+
+/* Matrix Section */
+.matrix-tabs {
+    margin-bottom: 20px;
+}
+
+.matrix-tab {
+    padding: 8px 16px;
+    margin-right: 8px;
+    border: none;
+    background: #f0f0f0;
+    cursor: pointer;
+}
+
+.matrix-tab.active {
+    background: #007bff;
+    color: white;
+}
+
+.matrix-container {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.matrix-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.matrix-table th,
+.matrix-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.matrix-table input {
+    width: 60px;
+    text-align: center;
+}
+
+/* Charts */
+.weight-chart,
+.matrix-heatmap,
+.chart-container {
+    margin: 30px 0;
+    height: 400px;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+/* Data Analysis Section */
+.export-section,
+.analysis-section {
+    margin: 30px 0;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .weight-slider {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .weight-slider label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .matrix-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}

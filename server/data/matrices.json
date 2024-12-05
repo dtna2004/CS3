@@ -1,0 +1,148 @@
+{
+    "occupation": {
+        "Kỹ sư phần mềm": {
+            "Kỹ sư phần mềm": 1.0,
+            "Bác sĩ": 0.4,
+            "Giáo viên": 0.5,
+            "Luật sư": 0.4,
+            "Thiết kế": 0.6,
+            "Kỹ sư xây dựng": 0.5,
+            "Nhà báo": 0.4,
+            "Kiến trúc sư": 0.5,
+            "Marketing": 0.5,
+            "Web Developer": 0.9,
+            "Tài chính": 0.5,
+            "Tuyển dụng": 0.4,
+            "Kỹ thuật viên": 0.7,
+            "Dữ liệu": 0.8,
+            "Nghệ sĩ": 0.3
+        },
+        "Bác sĩ": {
+            "Kỹ sư phần mềm": 0.4,
+            "Bác sĩ": 1.0,
+            "Giáo viên": 0.7,
+            "Luật sư": 0.6,
+            "Thiết kế": 0.3,
+            "Kỹ sư xây dựng": 0.4,
+            "Nhà báo": 0.4,
+            "Kiến trúc sư": 0.4,
+            "Marketing": 0.4,
+            "Web Developer": 0.3,
+            "Tài chính": 0.5,
+            "Tuyển dụng": 0.5,
+            "Kỹ thuật viên": 0.4,
+            "Dữ liệu": 0.5,
+            "Nghệ sĩ": 0.5
+        },
+        "Giáo viên": {
+            "Kỹ sư phần mềm": 0.5,
+            "Bác sĩ": 0.7,
+            "Giáo viên": 1.0,
+            "Luật sư": 0.6,
+            "Thiết kế": 0.6,
+            "Kỹ sư xây dựng": 0.5,
+            "Nhà báo": 0.7,
+            "Kiến trúc sư": 0.6,
+            "Marketing": 0.6,
+            "Web Developer": 0.5,
+            "Tài chính": 0.5,
+            "Tuyển dụng": 0.7,
+            "Kỹ thuật viên": 0.5,
+            "Dữ liệu": 0.6,
+            "Nghệ sĩ": 0.7
+        }
+    },
+    "interests": {
+        "Đọc sách": {
+            "Đọc sách": 1.0,
+            "Nhạc cụ": 0.6,
+            "Vẽ": 0.6,
+            "Thể thao": 0.3,
+            "Nấu ăn": 0.4,
+            "Chụp ảnh": 0.5,
+            "Du lịch": 0.6,
+            "Làm vườn": 0.4,
+            "Game": 0.4,
+            "Viết lách": 0.9,
+            "Sưu tầm": 0.5,
+            "Gym": 0.3,
+            "Xem phim": 0.7,
+            "Ngoại ngữ": 0.8,
+            "Yoga": 0.5
+        },
+        "Nhạc cụ": {
+            "Đọc sách": 0.6,
+            "Nhạc cụ": 1.0,
+            "Vẽ": 0.7,
+            "Thể thao": 0.4,
+            "Nấu ăn": 0.3,
+            "Chụp ảnh": 0.6,
+            "Du lịch": 0.5,
+            "Làm vườn": 0.3,
+            "Game": 0.4,
+            "Viết lách": 0.6,
+            "Sưu tầm": 0.6,
+            "Gym": 0.3,
+            "Xem phim": 0.6,
+            "Ngoại ngữ": 0.6,
+            "Yoga": 0.5
+        }
+    },
+    "lifestyle": {
+        "Sống tối giản": {
+            "Sống tối giản": 1.0,
+            "Sống bền vững": 0.8,
+            "Sống khỏe mạnh": 0.7,
+            "Sống tự do du mục": 0.6,
+            "Sống năng động": 0.4,
+            "Sống thư giãn": 0.6,
+            "Sống hướng ngoại": 0.4,
+            "Sống hướng nội": 0.8,
+            "Sống gia đình": 0.5,
+            "Sống phiêu lưu": 0.4,
+            "Sống nghệ thuật": 0.6,
+            "Sống gần gũi thiên nhiên": 0.7,
+            "Sống tập trung công việc": 0.5,
+            "Sống hòa hợp": 0.7,
+            "Sống vì cộng đồng": 0.5
+        }
+    },
+    "goals": {
+        "Phát triển sự nghiệp": {
+            "Phát triển sự nghiệp": 1.0,
+            "Xây dựng gia đình": 0.5,
+            "Sở hữu nhà riêng": 0.6,
+            "Du lịch khám phá": 0.4,
+            "Tự do tài chính": 0.8,
+            "Sức khỏe thể chất": 0.6,
+            "Kỹ năng mới": 0.7,
+            "Bằng cấp cao hơn": 0.7,
+            "Khởi nghiệp": 0.8,
+            "Cộng đồng": 0.5,
+            "Lãnh đạo": 0.9,
+            "Sách ảnh": 0.5,
+            "Quan hệ chất lượng": 0.6,
+            "Chuyên gia": 0.8,
+            "Từ thiện": 0.5
+        }
+    },
+    "values": {
+        "Trung thực": {
+            "Trung thực": 1.0,
+            "Tôn trọng": 0.8,
+            "Trách nhiệm": 0.8,
+            "Trung thành": 0.9,
+            "Tình yêu thương": 0.6,
+            "Sáng tạo": 0.5,
+            "Kiên trì": 0.7,
+            "Tự do": 0.5,
+            "Cảm thông": 0.7,
+            "Độc lập": 0.5,
+            "Hòa bình": 0.7,
+            "Biết ơn": 0.7,
+            "Công bằng": 0.8,
+            "Chính trực": 0.9,
+            "Bền bỉ": 0.7
+        }
+    }
+} 

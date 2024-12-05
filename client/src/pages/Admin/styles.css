@@ -236,3 +236,53 @@ button:disabled {
         margin-bottom: 0.5rem;
     }
 }
+
+.weight-chart {
+    width: 400px;
+    height: 300px;
+    margin: 20px auto;
+}
+
+.weights-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.weight-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.weight-item label {
+    min-width: 100px;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.weight-item input[type="range"] {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.weight-value {
+    min-width: 50px;
+    text-align: right;
+    font-weight: 500;
+}
+
+.total-weight {
+    text-align: right;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    font-weight: bold;
+}

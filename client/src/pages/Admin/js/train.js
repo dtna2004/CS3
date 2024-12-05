@@ -306,121 +306,227 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Train model
+    // Train model using matches data
     async function trainModel(users, matches, params) {
         const { epochs, learningRate, batchSize } = params;
         
-        // Reset chart data
+        console.log('Starting training with data:', {
+            totalUsers: users.length,
+            totalMatches: matches.length
+        });
+
+        // Reset chart
         trainingChart.data.labels = [];
         trainingChart.data.datasets[0].data = [];
         trainingChart.data.datasets[1].data = [];
         trainingChart.update();
 
-        // Initialize weights với giá trị từ file weights.json
+        // Initialize weights from weights.json
         let weights = {
-            age: 0.15,
-            interests: 0.2,
-            lifestyle: 0.15,
-            values: 0.1,
-            goals: 0.15,
-            location: 0.15,
-            occupation: 0.1
+            age: 0.05,
+            interests: 0.32,
+            lifestyle: 0.24,
+            values: 0.05,
+            goals: 0.05,
+            location: 0.24,
+            occupation: 0.05
         };
 
-        // Create training pairs
-        const trainingPairs = matches.map(match => {
+        // Log matches status distribution
+        const statusCounts = matches.reduce((acc, match) => {
+            acc[match.status] = (acc[match.status] || 0) + 1;
+            return acc;
+        }, {});
+        console.log('Matches status distribution:', statusCounts);
+
+        // Prepare training data with all status types
+        const matchPairs = matches.map(match => {
             const sender = users.find(u => u._id === match.sender);
             const receiver = users.find(u => u._id === match.receiver);
-            if (!sender || !receiver) return null;
+            if (!sender || !receiver) {
+                console.log('Missing user for match:', {
+                    matchId: match._id,
+                    senderId: match.sender,
+                    receiverId: match.receiver,
+                    senderFound: !!sender,
+                    receiverFound: !!receiver
+                });
+                return null;
+            }
+
+            // Convert status to label:
+            // rejected/blocked = 0
+            // pending = 0.5
+            // accepted = 1
+            let label = 0;
+            if (match.status === 'pending') label = 0.5;
+            else if (match.status === 'accepted') label = 1;
+            else if (match.status === 'rejected' || match.status === 'blocked') label = 0;
 
             return {
-                sender,
-                receiver,
-                label: match.status === 'accepted' ? 1 : (match.status === 'rejected' ? 0 : 0.5)
+                user1: sender,
+                user2: receiver,
+                label: label,
+                status: match.status
             };
         }).filter(pair => pair !== null);
+
+        console.log('Processed matches:', {
+            totalPairs: matchPairs.length,
+            byStatus: matchPairs.reduce((acc, pair) => {
+                acc[pair.status] = (acc[pair.status] || 0) + 1;
+                return acc;
+            }, {})
+        });
+
+        // Check if we have enough data
+        if (matchPairs.length === 0) {
+            console.error('No valid matches found');
+            alert('Không tìm thấy dữ liệu matches hợp lệ. Hãy kiểm tra lại file CSV.');
+            return weights;
+        }
+
+        // Shuffle all pairs
+        for (let i = matchPairs.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [matchPairs[i], matchPairs[j]] = [matchPairs[j], matchPairs[i]];
+        }
+
+        const lambda = 0.001; // Reduced regularization
+        let currentLearningRate = learningRate;
+        const minLearningRate = 0.0001;
+        const learningRateDecay = 0.95;
 
         // Training loop
         for (let epoch = 1; epoch <= epochs; epoch++) {
             let totalLoss = 0;
             let correctPredictions = 0;
+            let totalPredictions = 0;
             
             // Process each batch
-            for (let i = 0; i < trainingPairs.length; i += batchSize) {
-                const batch = trainingPairs.slice(i, i + batchSize);
-                const gradients = {
-                    age: 0,
-                    interests: 0,
-                    lifestyle: 0,
-                    values: 0,
-                    goals: 0,
-                    location: 0,
-                    occupation: 0
-                };
+            for (let i = 0; i < matchPairs.length; i += batchSize) {
+                const batch = matchPairs.slice(i, Math.min(i + batchSize, matchPairs.length));
+                const gradients = {};
+                Object.keys(weights).forEach(key => {
+                    gradients[key] = 0;
+                });
                 
+                // Accumulate gradients for batch
                 batch.forEach(pair => {
-                    // Calculate feature similarities
+                    // Skip pending matches for accuracy calculation
+                    if (pair.status === 'pending') return;
+
+                    // Calculate similarities
                     const similarities = {
-                        age: calculateAgeSimilarity(pair.sender, pair.receiver),
-                        interests: calculateInterestsSimilarity(pair.sender, pair.receiver),
-                        lifestyle: calculateLifestyleSimilarity(pair.sender, pair.receiver),
-                        values: calculateValuesSimilarity(pair.sender, pair.receiver),
-                        goals: calculateGoalsSimilarity(pair.sender, pair.receiver),
-                        location: calculateLocationSimilarity(pair.sender, pair.receiver),
-                        occupation: calculateOccupationSimilarity(pair.sender, pair.receiver)
+                        age: calculateAgeSimilarity(pair.user1, pair.user2),
+                        interests: calculateInterestsSimilarity(pair.user1, pair.user2),
+                        lifestyle: calculateLifestyleSimilarity(pair.user1, pair.user2),
+                        values: calculateValuesSimilarity(pair.user1, pair.user2),
+                        goals: calculateGoalsSimilarity(pair.user1, pair.user2),
+                        location: calculateLocationSimilarity(pair.user1, pair.user2),
+                        occupation: calculateOccupationSimilarity(pair.user1, pair.user2)
                     };
 
-                    // Calculate predicted score using current weights
-                    let predictedScore = 0;
+                    // Calculate weighted sum with clipping
+                    let weightedSum = 0;
                     Object.keys(weights).forEach(key => {
-                        predictedScore += similarities[key] * weights[key];
+                        const similarity = Math.min(Math.max(similarities[key], 0), 1);
+                        weightedSum += similarity * weights[key];
                     });
 
-                    // Calculate error
-                    const error = predictedScore - pair.label;
-                    totalLoss += error * error;
+                    // Clip weighted sum to prevent overflow
+                    weightedSum = Math.min(Math.max(weightedSum, -100), 100);
 
-                    // Update gradients
-                    Object.keys(gradients).forEach(key => {
-                        gradients[key] += error * similarities[key];
+                    // Calculate prediction with stable sigmoid
+                    const prediction = weightedSum < -100 ? 0 : 
+                                     weightedSum > 100 ? 1 : 
+                                     1 / (1 + Math.exp(-weightedSum));
+
+                    // Calculate error and gradients
+                    const error = prediction - pair.label;
+                    
+                    // Update gradients safely
+                    Object.keys(weights).forEach(key => {
+                        const similarity = Math.min(Math.max(similarities[key], 0), 1);
+                        const gradient = error * similarity;
+                        if (!isNaN(gradient)) {
+                            gradients[key] += gradient;
+                        }
                     });
 
-                    // Check if prediction is correct (within threshold)
-                    if (Math.abs(error) < 0.2) {
-                        correctPredictions++;
+                    // Update loss and accuracy
+                    if (!isNaN(prediction)) {
+                        // Cross entropy loss with clipping
+                        const epsilon = 1e-7;
+                        const clippedPred = Math.min(Math.max(prediction, epsilon), 1 - epsilon);
+                        totalLoss -= (pair.label * Math.log(clippedPred) + 
+                                    (1 - pair.label) * Math.log(1 - clippedPred));
+
+                        // Update accuracy (only for non-pending matches)
+                        if (pair.status !== 'pending') {
+                            totalPredictions++;
+                            if ((prediction >= 0.5 && pair.label === 1) || 
+                                (prediction < 0.5 && pair.label === 0)) {
+                                correctPredictions++;
+                            }
+                        }
                     }
                 });
 
-                // Update weights using accumulated gradients
+                // Update weights safely
                 Object.keys(weights).forEach(key => {
-                    weights[key] -= (learningRate * gradients[key]) / batch.length;
-                    // Ensure weights stay positive and not too small
-                    weights[key] = Math.max(0.05, weights[key]);
+                    const gradient = gradients[key] / batch.length;
+                    if (!isNaN(gradient)) {
+                        // Add L2 regularization
+                        const regularization = lambda * weights[key];
+                        weights[key] -= currentLearningRate * (gradient + regularization);
+                        
+                        // Ensure weight stays in valid range
+                        weights[key] = Math.min(Math.max(weights[key], 0.05), 0.4);
+                    }
                 });
 
-                // Normalize weights to sum to 1
+                // Normalize weights
                 const totalWeight = Object.values(weights).reduce((a, b) => a + b, 0);
-                Object.keys(weights).forEach(key => {
-                    weights[key] = weights[key] / totalWeight;
-                });
+                if (totalWeight > 0) {
+                    Object.keys(weights).forEach(key => {
+                        weights[key] = weights[key] / totalWeight;
+                    });
+                }
             }
 
-            // Calculate epoch metrics
-            const epochLoss = totalLoss / trainingPairs.length;
-            const epochAccuracy = correctPredictions / trainingPairs.length;
+            // Calculate metrics safely
+            const epochLoss = totalPredictions > 0 ? totalLoss / totalPredictions : 0;
+            const epochAccuracy = totalPredictions > 0 ? (correctPredictions / totalPredictions) * 100 : 0;
+
+            // Check for NaN
+            if (isNaN(epochLoss) || isNaN(epochAccuracy)) {
+                console.error('Training diverged - NaN detected');
+                alert('Training bị lỗi. Thử giảm learning rate hoặc tăng regularization.');
+                break;
+            }
+
+            // Update learning rate
+            currentLearningRate = Math.max(currentLearningRate * learningRateDecay, minLearningRate);
 
             // Update progress
             const progress = (epoch / epochs) * 100;
             progressBar.style.width = `${progress}%`;
             currentEpoch.textContent = epoch;
             currentLoss.textContent = epochLoss.toFixed(4);
-            currentAccuracy.textContent = (epochAccuracy * 100).toFixed(2) + '%';
+            currentAccuracy.textContent = epochAccuracy.toFixed(2) + '%';
 
             // Update chart
             trainingChart.data.labels.push(epoch);
             trainingChart.data.datasets[0].data.push(epochLoss);
-            trainingChart.data.datasets[1].data.push(epochAccuracy);
+            trainingChart.data.datasets[1].data.push(epochAccuracy / 100);
             trainingChart.update();
+
+            // Early stopping if accuracy is good enough
+            if (epochAccuracy > 85) {
+                console.log('Early stopping: Achieved good accuracy');
+                break;
+            }
 
             // Allow UI to update
             await new Promise(resolve => setTimeout(resolve, 0));
@@ -432,48 +538,69 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper functions for calculating similarities
     function calculateAgeSimilarity(user1, user2) {
         if (!user1.age || !user2.age) return 0;
-        const ageDiff = Math.abs(parseInt(user1.age) - parseInt(user2.age));
-        return Math.max(0, 1 - ageDiff / 20); // Normalize by 20 years difference
+        const age1 = parseInt(user1.age);
+        const age2 = parseInt(user2.age);
+        if (isNaN(age1) || isNaN(age2)) return 0;
+        
+        const ageDiff = Math.abs(age1 - age2);
+        // More lenient age difference scaling
+        return Math.max(0, 1 - ageDiff / 15);
     }
 
     function calculateInterestsSimilarity(user1, user2) {
         if (!user1.interests || !user2.interests) return 0;
-        const interests1 = user1.interests.filter(i => i);
-        const interests2 = user2.interests.filter(i => i);
+        const interests1 = user1.interests.filter(i => i && i.trim());
+        const interests2 = user2.interests.filter(i => i && i.trim());
         if (interests1.length === 0 || interests2.length === 0) return 0;
         
-        const commonInterests = interests1.filter(i => interests2.includes(i)).length;
-        return commonInterests / Math.max(interests1.length, interests2.length);
+        const commonInterests = interests1.filter(i => 
+            interests2.some(j => j.toLowerCase() === i.toLowerCase())
+        ).length;
+        
+        // Weighted by number of interests
+        const weight = Math.min(interests1.length, interests2.length) / Math.max(3, Math.max(interests1.length, interests2.length));
+        return (commonInterests / Math.max(interests1.length, interests2.length)) * weight;
     }
 
     function calculateLifestyleSimilarity(user1, user2) {
         if (!user1.lifestyle || !user2.lifestyle) return 0;
-        const lifestyle1 = user1.lifestyle.filter(l => l);
-        const lifestyle2 = user2.lifestyle.filter(l => l);
+        const lifestyle1 = user1.lifestyle.filter(l => l && l.trim());
+        const lifestyle2 = user2.lifestyle.filter(l => l && l.trim());
         if (lifestyle1.length === 0 || lifestyle2.length === 0) return 0;
         
-        const commonLifestyle = lifestyle1.filter(l => lifestyle2.includes(l)).length;
+        const commonLifestyle = lifestyle1.filter(l => 
+            lifestyle2.some(m => m.toLowerCase() === l.toLowerCase())
+        ).length;
+        
         return commonLifestyle / Math.max(lifestyle1.length, lifestyle2.length);
     }
 
     function calculateValuesSimilarity(user1, user2) {
         if (!user1.values || !user2.values) return 0;
-        const values1 = user1.values.filter(v => v);
-        const values2 = user2.values.filter(v => v);
+        const values1 = user1.values.filter(v => v && v.trim());
+        const values2 = user2.values.filter(v => v && v.trim());
         if (values1.length === 0 || values2.length === 0) return 0;
         
-        const commonValues = values1.filter(v => values2.includes(v)).length;
-        return commonValues / Math.max(values1.length, values2.length);
+        const commonValues = values1.filter(v => 
+            values2.some(w => w.toLowerCase() === v.toLowerCase())
+        ).length;
+        
+        // Values matching is more important
+        return Math.pow(commonValues / Math.max(values1.length, values2.length), 0.8);
     }
 
     function calculateGoalsSimilarity(user1, user2) {
         if (!user1.goals || !user2.goals) return 0;
-        const goals1 = user1.goals.filter(g => g);
-        const goals2 = user2.goals.filter(g => g);
+        const goals1 = user1.goals.filter(g => g && g.trim());
+        const goals2 = user2.goals.filter(g => g && g.trim());
         if (goals1.length === 0 || goals2.length === 0) return 0;
         
-        const commonGoals = goals1.filter(g => goals2.includes(g)).length;
-        return commonGoals / Math.max(goals1.length, goals2.length);
+        const commonGoals = goals1.filter(g => 
+            goals2.some(h => h.toLowerCase() === g.toLowerCase())
+        ).length;
+        
+        // Goals matching is very important
+        return Math.pow(commonGoals / Math.max(goals1.length, goals2.length), 0.7);
     }
 
     function calculateLocationSimilarity(user1, user2) {
@@ -484,12 +611,23 @@ document.addEventListener('DOMContentLoaded', () => {
             parseFloat(user2.location.coordinates[1]),
             parseFloat(user2.location.coordinates[0])
         );
-        return Math.max(0, 1 - distance / 100); // Normalize by 100km
+        
+        // Exponential decay for distance
+        return Math.exp(-distance / 50); // Adjust 50km scale factor
     }
 
     function calculateOccupationSimilarity(user1, user2) {
         if (!user1.occupation || !user2.occupation) return 0;
-        return user1.occupation === user2.occupation ? 1 : 0;
+        const occ1 = user1.occupation.toLowerCase().trim();
+        const occ2 = user2.occupation.toLowerCase().trim();
+        
+        // Exact match gets full score
+        if (occ1 === occ2) return 1;
+        
+        // Partial match gets partial score
+        if (occ1.includes(occ2) || occ2.includes(occ1)) return 0.5;
+        
+        return 0;
     }
 
     // Display optimized weights

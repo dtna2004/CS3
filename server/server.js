@@ -36,7 +36,7 @@ const matchRoutes = require('./routes/match');
 const messageRoutes = require('./routes/message');
 const matchingRoutes = require('./routes/matching');
 const videoCallRoutes = require('./routes/videoCall');
-const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Use routes
 app.use('/api/auth', authRoutes);

@@ -571,4 +571,90 @@
     padding: 10px 20px;
     border-radius: 20px;
     z-index: 1001;
+}
+
+.emoji-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    margin: 0 5px;
+    transition: transform 0.2s;
+}
+
+.emoji-button:hover {
+    transform: scale(1.1);
+}
+
+.emoji-container {
+    position: absolute;
+    bottom: 60px;
+    left: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 10px;
+    display: none;
+    flex-wrap: wrap;
+    gap: 5px;
+    max-width: 300px;
+    z-index: 1000;
+}
+
+.emoji-item {
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.emoji-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .emoji-container {
+        max-width: 250px;
+        bottom: 70px;
+    }
+    
+    .emoji-item {
+        font-size: 1.2rem;
+    }
+}
+
+/* Đảm bảo emoji container không bị che khuất */
+.chat-controls {
+    position: relative;
+}
+
+/* Tùy chỉnh giao diện emoji picker */
+emoji-picker {
+    --background: #fff;
+    --border-color: #e0e0e0;
+    --category-emoji-size: 1.25rem;
+    --emoji-size: 1.5rem;
+    --emoji-padding: 0.5rem;
+    --input-border-color: #e0e0e0;
+    --input-font-size: 0.9rem;
+    --input-padding: 0.5rem;
+    --num-columns: 8;
+    --outline-color: #4a90e2;
+}
+
+/* Responsive design cho emoji picker */
+@media (max-width: 768px) {
+    .emoji-picker {
+        width: 280px;
+        bottom: 70px;
+        right: 10px;
+    }
+    
+    emoji-picker {
+        --emoji-size: 1.2rem;
+        --num-columns: 6;
+    }
 } 

@@ -6,6 +6,7 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.1/dist/chartjs-chart-matrix.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -25,40 +26,43 @@
             <div class="section">
                 <h2>Matching Weights</h2>
                 <div class="weights-container">
-                    <div class="weight-slider">
+                    <div class="weight-item">
                         <label for="distance">Distance:</label>
-                        <input type="range" id="distance" min="0" max="100" value="15">
-                        <span class="weight-value">15%</span>
+                        <input type="range" id="distance" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="distance">15%</span>
                     </div>
-                    <div class="weight-slider">
+                    <div class="weight-item">
                         <label for="age">Age:</label>
-                        <input type="range" id="age" min="0" max="100" value="15">
-                        <span class="weight-value">15%</span>
+                        <input type="range" id="age" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="age">15%</span>
                     </div>
-                    <div class="weight-slider">
+                    <div class="weight-item">
                         <label for="occupation">Occupation:</label>
-                        <input type="range" id="occupation" min="0" max="100" value="10">
-                        <span class="weight-value">10%</span>
+                        <input type="range" id="occupation" class="weight-slider" min="0" max="100" value="10">
+                        <span class="weight-value" data-for="occupation">10%</span>
                     </div>
-                    <div class="weight-slider">
+                    <div class="weight-item">
                         <label for="interests">Interests:</label>
-                        <input type="range" id="interests" min="0" max="100" value="20">
-                        <span class="weight-value">20%</span>
+                        <input type="range" id="interests" class="weight-slider" min="0" max="100" value="20">
+                        <span class="weight-value" data-for="interests">20%</span>
                     </div>
-                    <div class="weight-slider">
+                    <div class="weight-item">
                         <label for="lifestyle">Lifestyle:</label>
-                        <input type="range" id="lifestyle" min="0" max="100" value="15">
-                        <span class="weight-value">15%</span>
+                        <input type="range" id="lifestyle" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="lifestyle">15%</span>
                     </div>
-                    <div class="weight-slider">
+                    <div class="weight-item">
                         <label for="goals">Goals:</label>
-                        <input type="range" id="goals" min="0" max="100" value="15">
-                        <span class="weight-value">15%</span>
+                        <input type="range" id="goals" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="goals">15%</span>
                     </div>
-                    <div class="weight-slider">
+                    <div class="weight-item">
                         <label for="values">Values:</label>
-                        <input type="range" id="values" min="0" max="100" value="10">
-                        <span class="weight-value">10%</span>
+                        <input type="range" id="values" class="weight-slider" min="0" max="100" value="10">
+                        <span class="weight-value" data-for="values">10%</span>
+                    </div>
+                    <div class="total-weight">
+                        Total: <span id="totalWeight">100%</span>
                     </div>
                 </div>
                 <div class="weight-chart">
@@ -72,17 +76,15 @@
         <div id="matrices" class="tab-content">
             <div class="section">
                 <h2>Compatibility Matrices</h2>
-                <div class="matrix-tabs">
+                <div class="matrix-types">
                     <button class="matrix-tab active" data-matrix="occupation">Occupation</button>
                     <button class="matrix-tab" data-matrix="interests">Interests</button>
                     <button class="matrix-tab" data-matrix="lifestyle">Lifestyle</button>
                     <button class="matrix-tab" data-matrix="goals">Goals</button>
                     <button class="matrix-tab" data-matrix="values">Values</button>
                 </div>
-                <div class="matrix-container">
-                    <table id="matrixTable" class="matrix-table">
-                        <!-- Matrix will be rendered here -->
-                    </table>
+                <div id="matrixContainer" class="matrix-container">
+                    <!-- Matrix will be rendered here -->
                 </div>
                 <div class="matrix-heatmap">
                     <canvas id="heatmapChart"></canvas>
@@ -187,6 +189,8 @@
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="js/constants.js"></script>
     <script src="js/tabs.js"></script>
     <script src="js/matrix.js"></script>
     <script src="js/weights.js"></script>

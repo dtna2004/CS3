@@ -1,4 +1,5 @@
-const WEIGHTS = {
+// Export các biến để có thể chỉnh sửa từ bên ngoài
+exports.WEIGHTS = {
     distance: 0.15,
     age: 0.15,
     occupation: 0.1,
@@ -8,7 +9,7 @@ const WEIGHTS = {
     values: 0.1
 };
 
-const COMPATIBILITY_MATRICES = {
+exports.COMPATIBILITY_MATRICES = {
     occupation: [
         //KSP   Bác   GV    LS    TK    KSX   NB    KT    MKT   Web   TC    TD    KTV   DL    NS
         [1.0,  0.4,  0.5,  0.4,  0.6,  0.5,  0.4,  0.5,  0.5,  0.9,  0.5,  0.4,  0.7,  0.8,  0.3], // Kỹ sư phần mềm
@@ -106,21 +107,31 @@ const COMPATIBILITY_MATRICES = {
 };
 
 function calculateDistance(location1, location2) {
-    if (!location1 || !location2) return 0;
+    if (!location1?.coordinates || !location2?.coordinates) return 0;
     
-    const R = 6371;
-    const lat1 = location1.lat * Math.PI / 180;
-    const lat2 = location2.lat * Math.PI / 180;
-    const dLat = (location2.lat - location1.lat) * Math.PI / 180;
-    const dLon = (location2.lng - location1.lng) * Math.PI / 180;
+    const R = 6371; // Bán kính trái đất tính bằng km
+    
+    // Lấy tọa độ từ GeoJSON format (longitude, latitude)
+    const lon1 = location1.coordinates[0];
+    const lat1 = location1.coordinates[1];
+    const lon2 = location2.coordinates[0];
+    const lat2 = location2.coordinates[1];
+    
+    // Chuyển đổi sang radian
+    const lat1Rad = lat1 * Math.PI / 180;
+    const lat2Rad = lat2 * Math.PI / 180;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
 
+    // Công thức haversine
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1) * Math.cos(lat2) *
+              Math.cos(lat1Rad) * Math.cos(lat2Rad) *
               Math.sin(dLon/2) * Math.sin(dLon/2);
     
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    const distance = R * c;
+    const distance = R * c; // Khoảng cách tính bằng km
     
+    // Chuẩn hóa điểm số từ 0-1, với 100km là khoảng cách tối đa
     return Math.max(0, 1 - distance/100);
 }
 
@@ -137,57 +148,112 @@ function calculateCompatibilityScore(item1, item2, matrix) {
     return matrix[item1][item2] || matrix[item2][item1] || 0.5;
 }
 
-function calculateArrayCompatibility(arr1, arr2, matrix) {
-    if (!arr1 || !arr2 || arr1.length === 0 || arr2.length === 0) return 0;
+function calculateArrayCompatibility(arr1, arr2, matrixType) {
+    if (!arr1?.length || !arr2?.length) return 0;
     
+    const matrix = COMPATIBILITY_MATRICES[matrixType];
+    if (!matrix) return 0;
+
     let totalScore = 0;
-    let comparisons = 0;
+    let count = 0;
 
-    arr1.forEach(item1 => {
-        arr2.forEach(item2 => {
-            totalScore += calculateCompatibilityScore(item1, item2, matrix);
-            comparisons++;
-        });
-    });
+    for (let i = 0; i < arr1.length; i++) {
+        for (let j = 0; j < arr2.length; j++) {
+            const score = calculateCompatibilityScore(arr1[i], arr2[j], matrix);
+            if (score !== undefined) {
+                totalScore += score;
+                count++;
+            }
+        }
+    }
 
-    return comparisons > 0 ? totalScore / comparisons : 0;
+    return count > 0 ? totalScore / count : 0;
 }
 
 exports.calculateMatchScore = (user1, user2) => {
-    const scores = {
-        distance: calculateDistance(user1.location, user2.location),
-        age: calculateAgeScore(user1.age, user2.age),
-        occupation: calculateCompatibilityScore(
-            user1.occupation,
-            user2.occupation,
-            COMPATIBILITY_MATRICES.occupation
-        ),
-        interests: calculateArrayCompatibility(
-            user1.interests,
-            user2.interests,
-            COMPATIBILITY_MATRICES.interests
-        ),
-        lifestyle: calculateArrayCompatibility(
-            user1.lifestyle,
-            user2.lifestyle,
-            COMPATIBILITY_MATRICES.lifestyle
-        ),
-        goals: calculateArrayCompatibility(
-            user1.goals,
-            user2.goals,
-            COMPATIBILITY_MATRICES.goals
-        ),
-        values: calculateArrayCompatibility(
-            user1.values,
-            user2.values,
-            COMPATIBILITY_MATRICES.values
-        )
-    };
+    let totalScore = 0;
+    let totalWeight = 0;
 
-    let finalScore = 0;
-    for (const [category, score] of Object.entries(scores)) {
-        finalScore += WEIGHTS[category] * score;
+    // Tính điểm khoảng cách
+    if (user1.location?.coordinates && user2.location?.coordinates) {
+        const distanceScore = calculateDistance(user1.location, user2.location);
+        totalScore += distanceScore * WEIGHTS.distance;
+        totalWeight += WEIGHTS.distance;
+        
+        console.log('Distance score:', {
+            user1Location: user1.location.coordinates,
+            user2Location: user2.location.coordinates,
+            distanceScore
+        });
     }
 
+    // Tính điểm tuổi tác
+    if (user1.age && user2.age) {
+        const ageDiff = Math.abs(user1.age - user2.age);
+        const ageScore = 1 - Math.min(ageDiff / 10, 1);
+        totalScore += ageScore * WEIGHTS.age;
+        totalWeight += WEIGHTS.age;
+    }
+
+    // Tính điểm nghề nghiệp
+    if (user1.occupation && user2.occupation) {
+        const occupationScore = calculateCompatibilityScore(
+            user1.occupation, 
+            user2.occupation, 
+            COMPATIBILITY_MATRICES.occupation
+        );
+        totalScore += occupationScore * WEIGHTS.occupation;
+        totalWeight += WEIGHTS.occupation;
+    }
+
+    // Tính điểm sở thích
+    if (user1.interests?.length && user2.interests?.length) {
+        const interestScore = calculateArrayCompatibility(user1.interests, user2.interests, 'interests');
+        totalScore += interestScore * WEIGHTS.interests;
+        totalWeight += WEIGHTS.interests;
+    }
+
+    // Tính điểm lối sống
+    if (user1.lifestyle?.length && user2.lifestyle?.length) {
+        const lifestyleScore = calculateArrayCompatibility(
+            user1.lifestyle, 
+            user2.lifestyle, 
+            'lifestyle'
+        );
+        totalScore += lifestyleScore * WEIGHTS.lifestyle;
+        totalWeight += WEIGHTS.lifestyle;
+    }
+
+    // Tính điểm mục tiêu
+    if (user1.goals?.length && user2.goals?.length) {
+        const goalsScore = calculateArrayCompatibility(
+            user1.goals,
+            user2.goals,
+            'goals'
+        );
+        totalScore += goalsScore * WEIGHTS.goals;
+        totalWeight += WEIGHTS.goals;
+    }
+
+    // Tính điểm giá trị sống
+    if (user1.values?.length && user2.values?.length) {
+        const valuesScore = calculateArrayCompatibility(
+            user1.values,
+            user2.values,
+            'values'
+        );
+        totalScore += valuesScore * WEIGHTS.values;
+        totalWeight += WEIGHTS.values;
+    }
+
+    // Chuẩn hóa điểm số
+    const finalScore = totalWeight > 0 ? totalScore / totalWeight : 0;
+    console.log('Score details:', {
+        users: [user1.name, user2.name],
+        totalScore,
+        totalWeight,
+        finalScore
+    });
+    
     return finalScore;
 }; 

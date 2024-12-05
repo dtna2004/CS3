@@ -1,3 +1,8 @@
+
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/djkesszqc/upload';
+const API_URL = 'http://localhost:3000/api';
+const DEFAULT_AVATAR = 'https://res.cloudinary.com/djkesszqc/image/upload/v1728000000/default_avatar.png';
+
 function initializeForm() {
     // Thêm options cho occupation
     const occupationSelect = document.getElementById('occupation');

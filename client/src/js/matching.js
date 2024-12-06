@@ -1,55 +1,93 @@
 let currentUserLocation = null;
 
 async function getCurrentLocation() {
-    return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    currentUserLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    resolve(currentUserLocation);
-                },
-                error => {
-                    console.error('Error getting location:', error);
-                    currentUserLocation = { lat: 0, lng: 0 };
-                    resolve(currentUserLocation);
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported');
-            currentUserLocation = { lat: 0, lng: 0 };
-            resolve(currentUserLocation);
-        }
-    });
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+        
+        currentUserLocation = {
+            type: "Point",
+            coordinates: [position.coords.longitude, position.coords.latitude]
+        };
+        
+        // Cập nhật vị trí lên server
+        await fetch(`${API_URL}/users/update-location`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                location: currentUserLocation
+            })
+        });
+
+        console.log('Current user location set:', currentUserLocation);
+    } catch (error) {
+        console.error('Error getting location:', error);
+        currentUserLocation = null;
+    }
 }
 
 function calculateDistance(location1, location2) {
     if (!location1 || !location2) return 0;
-    
+
     const R = 6371; // Radius of the Earth in kilometers
     const lat1 = location1.lat * Math.PI / 180;
     const lat2 = location2.lat * Math.PI / 180;
     const dLat = (location2.lat - location1.lat) * Math.PI / 180;
     const dLon = (location2.lng - location1.lng) * Math.PI / 180;
 
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1) * Math.cos(lat2) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1) * Math.cos(lat2) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in kilometers
 }
 
 function calculateDisplayDistance(location) {
-    if (!currentUserLocation || !location) return "N/A";
-    return Math.round(calculateDistance(currentUserLocation, location));
+    try {
+        if (!currentUserLocation || !location) {
+            console.log('Missing location data:', { currentUserLocation, location });
+            return 'N/A';
+        }
+        
+        if (!currentUserLocation.coordinates || !location.coordinates) {
+            console.log('Missing coordinates:', { 
+                currentUser: currentUserLocation.coordinates, 
+                otherUser: location.coordinates 
+            });
+            return 'N/A';
+        }
+
+        const distance = calculateDistance(
+            currentUserLocation.coordinates,
+            location.coordinates
+        );
+        
+        return distance ? Math.round(distance) : 'N/A';
+    } catch (error) {
+        console.error('Error calculating distance:', error);
+        return 'N/A';
+    }
+}
+
+function showLoading() {
+    const container = document.getElementById('matchesContainer');
+    container.innerHTML = `
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Đang tìm kiếm người phù hợp...</p>
+        </div>
+    `;
 }
 
 async function loadPotentialMatches() {
     try {
-        await getCurrentLocation(); // Get user's location first
+        showLoading();
+        await getCurrentLocation();
 
         const response = await fetch(`${API_URL}/matching/potential-matches`, {
             headers: {
@@ -57,19 +95,30 @@ async function loadPotentialMatches() {
             }
         });
 
+        console.log('Response status:', response.status);
+
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
             throw new Error('Lỗi khi tải danh sách ghép cặp');
         }
 
         const matches = await response.json();
-        renderMatches(matches.filter(match => 
-            match.user.name && 
-            match.user.interests && 
+        console.log('Potential matches:', matches);
+
+        renderMatches(matches.filter(match =>
+            match.user.name &&
+            match.user.interests &&
             match.user.interests.length > 0
         ));
     } catch (error) {
         console.error('Error:', error);
-        alert('Có lỗi xảy ra khi tải danh sách ghép cặp');
+        document.getElementById('matchesContainer').innerHTML = `
+            <div class="error-message">
+                <p>Có lỗi xảy ra khi tải danh sách ghép cặp</p>
+                <button onclick="loadPotentialMatches()">Thử lại</button>
+            </div>
+        `;
     }
 }
 
@@ -88,14 +137,14 @@ function renderMatches(matches) {
             </div>
             <h3>${match.user.name}</h3>
             <div class="match-info">
-                <p class="interests">${match.user.interests.join(', ')}</p>
-                <p class="distance">${calculateDisplayDistance(match.user.location)} km</p>
+                <p class="interests">${match.user.interests ? match.user.interests.join(', ') : 'Chưa cập nhật'}</p>
+                <p class="distance">${calculateDisplayDistance(match.user.location) || 'N/A'} km</p>
             </div>
             <div class="match-score">
                 <div class="score-bar">
-                    <div class="score-fill" style="width: ${Math.round(match.score * 100)}%"></div>
+                    <div class="score-fill" style="width: ${Math.round((match.score || 0) * 100)}%"></div>
                 </div>
-                <p>${Math.round(match.score * 100)}% phù hợp</p>
+                <p>${Math.round((match.score || 0) * 100)}% phù hợp</p>
             </div>
             <div class="match-actions">
                 <button class="btn-view">Xem chi tiết</button>
@@ -106,11 +155,11 @@ function renderMatches(matches) {
         matchCard.querySelector('.avatar-container').addEventListener('click', () => {
             viewProfile(match.user._id);
         });
-        
+
         matchCard.querySelector('.btn-view').addEventListener('click', () => {
             viewProfile(match.user._id);
         });
-        
+
         matchCard.querySelector('.btn-connect').addEventListener('click', () => {
             sendMatchRequest(match.user._id);
         });
@@ -244,6 +293,45 @@ style.textContent = `
 
     .btn-connect:hover {
         background: #ff3356;
+    }
+
+    .loading-container {
+        text-align: center;
+        padding: 40px;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #ff4b6e;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .error-message button {
+        background: #ff4b6e;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .error-message button:hover {
+        background: #ff3355;
     }
 `;
 document.head.appendChild(style);

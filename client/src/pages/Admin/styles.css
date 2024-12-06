@@ -1,0 +1,288 @@
+/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.tab-btn.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Section Styles */
+.section {
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Help Text */
+.help-text {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* Train Model Styles */
+.file-upload {
+    margin-bottom: 2rem;
+}
+
+.file-input-group {
+    margin-bottom: 1rem;
+}
+
+.file-input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.file-input-group input[type="file"] {
+    margin-bottom: 0.5rem;
+}
+
+.training-params {
+    margin-bottom: 2rem;
+}
+
+.param-group {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.param-group label {
+    min-width: 120px;
+    font-weight: 500;
+}
+
+.param-group input {
+    width: 100px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.training-controls {
+    margin-bottom: 2rem;
+}
+
+.training-progress {
+    margin-bottom: 2rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+#trainingProgress {
+    height: 100%;
+    background-color: #4CAF50;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+.metrics {
+    display: flex;
+    gap: 2rem;
+}
+
+.metric {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.metric label {
+    font-weight: 500;
+}
+
+.chart-container {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 2rem;
+}
+
+.optimized-weights {
+    margin-bottom: 2rem;
+}
+
+.weight-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.weight-item:last-child {
+    border-bottom: none;
+}
+
+.weight-item .label {
+    font-weight: 500;
+}
+
+.weight-item .value {
+    color: #666;
+}
+
+#applyWeights {
+    margin-top: 1rem;
+}
+
+/* Buttons */
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        flex: 1 1 auto;
+    }
+
+    .metrics {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .param-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .param-group label {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.weight-chart {
+    width: 400px;
+    height: 300px;
+    margin: 20px auto;
+}
+
+.weights-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.weight-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.weight-item label {
+    min-width: 100px;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.weight-item input[type="range"] {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.weight-value {
+    min-width: 50px;
+    text-align: right;
+    font-weight: 500;
+}
+
+.total-weight {
+    text-align: right;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    font-weight: bold;
+}

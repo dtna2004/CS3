@@ -7,6 +7,63 @@ let isLoadingMessages = false;
 let hasMoreMessages = true;
 let messageInterval = null;
 
+// Thêm emoji picker
+let emojiPicker = null;
+
+function initEmojiPicker() {
+    if (!customElements.get('emoji-picker')) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/index.min.js';
+        document.head.appendChild(script);
+
+        script.onload = () => {
+            createEmojiPicker();
+        };
+    } else {
+        createEmojiPicker();
+    }
+}
+
+function createEmojiPicker() {
+    emojiPicker = document.createElement('emoji-picker');
+    emojiPicker.classList.add('emoji-picker');
+    emojiPicker.style.display = 'none';
+    document.getElementById('chatControls').appendChild(emojiPicker);
+
+    emojiPicker.addEventListener('emoji-click', event => {
+        const messageInput = document.getElementById('messageInput');
+        messageInput.value += event.detail.unicode;
+        emojiPicker.style.display = 'none';
+    });
+}
+
+function toggleEmojiPicker() {
+    if (!emojiPicker) {
+        initEmojiPicker();
+        return;
+    }
+    emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+}
+
+// Thêm nút emoji vào giao diện chat
+function addEmojiButton() {
+    const chatControls = document.getElementById('chatControls');
+    const emojiButton = document.createElement('button');
+    emojiButton.className = 'emoji-button';
+    emojiButton.innerHTML = '😊';
+    emojiButton.onclick = toggleEmojiPicker;
+    
+    // Chèn nút emoji trước nút gửi
+    const sendButton = chatControls.querySelector('button');
+    chatControls.insertBefore(emojiButton, sendButton);
+}
+
+// Khởi tạo emoji picker khi trang được load
+document.addEventListener('DOMContentLoaded', () => {
+    addEmojiButton();
+    initEmojiPicker();
+});
+
 async function loadMatches() {
     try {
         console.log('Loading matches...');
@@ -317,3 +374,60 @@ async function startVideoCall() {
 window.startVideoCall = startVideoCall;
 window.sendMessage = sendMessage;
 window.viewProfile = viewProfile;
+
+// Thêm chức năng emoji
+function initEmojiPicker() {
+    // Tạo container cho emoji picker
+    const emojiContainer = document.createElement('div');
+    emojiContainer.className = 'emoji-container';
+    emojiContainer.style.display = 'none';
+
+    // Thêm các emoji phổ biến
+    const commonEmojis = [
+        '😊', '😂', '🥰', '😍', '😘', '😭', '😅', '😉', '😎', '🥳',
+        '👍', '❤️', '😋', '🤗', '😴', '🤔', '😇', '😜', '😡', '😱',
+        '🎉', '✨', '💕', '💖', '💝', '💓', '💗', '💞', '💘', '💌'
+    ];
+
+    commonEmojis.forEach(emoji => {
+        const emojiSpan = document.createElement('span');
+        emojiSpan.className = 'emoji-item';
+        emojiSpan.textContent = emoji;
+        emojiSpan.onclick = () => {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value += emoji;
+            emojiContainer.style.display = 'none';
+        };
+        emojiContainer.appendChild(emojiSpan);
+    });
+
+    // Thêm nút emoji
+    const emojiButton = document.createElement('button');
+    emojiButton.className = 'emoji-button';
+    emojiButton.innerHTML = '😊';
+    emojiButton.onclick = (e) => {
+        e.preventDefault();
+        emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'flex' : 'none';
+    };
+
+    // Thêm vào DOM
+    const chatControls = document.getElementById('chatControls');
+    const messageInput = document.getElementById('messageInput');
+    
+    // Chèn nút emoji trước input
+    messageInput.parentNode.insertBefore(emojiButton, messageInput);
+    // Thêm container emoji sau input
+    messageInput.parentNode.appendChild(emojiContainer);
+
+    // Đóng emoji picker khi click ra ngoài
+    document.addEventListener('click', (e) => {
+        if (!emojiContainer.contains(e.target) && !emojiButton.contains(e.target)) {
+            emojiContainer.style.display = 'none';
+        }
+    });
+}
+
+// Khởi tạo emoji picker khi trang được load
+document.addEventListener('DOMContentLoaded', () => {
+    initEmojiPicker();
+});

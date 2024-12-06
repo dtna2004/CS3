@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.1/dist/chartjs-chart-matrix.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin Dashboard</h1>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="weights">Weights</button>
+            <button class="tab-btn" data-tab="matrices">Compatibility Matrices</button>
+            <button class="tab-btn" data-tab="data">Data Analysis</button>
+            <button class="tab-btn" data-tab="train">Train Model</button>
+        </div>
+
+        <!-- Weights Section -->
+        <div id="weights" class="tab-content active">
+            <div class="section">
+                <h2>Matching Weights</h2>
+                <div class="weights-container">
+                    <div class="weight-item">
+                        <label for="distance">Distance:</label>
+                        <input type="range" id="distance" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="distance">15%</span>
+                    </div>
+                    <div class="weight-item">
+                        <label for="age">Age:</label>
+                        <input type="range" id="age" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="age">15%</span>
+                    </div>
+                    <div class="weight-item">
+                        <label for="occupation">Occupation:</label>
+                        <input type="range" id="occupation" class="weight-slider" min="0" max="100" value="10">
+                        <span class="weight-value" data-for="occupation">10%</span>
+                    </div>
+                    <div class="weight-item">
+                        <label for="interests">Interests:</label>
+                        <input type="range" id="interests" class="weight-slider" min="0" max="100" value="20">
+                        <span class="weight-value" data-for="interests">20%</span>
+                    </div>
+                    <div class="weight-item">
+                        <label for="lifestyle">Lifestyle:</label>
+                        <input type="range" id="lifestyle" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="lifestyle">15%</span>
+                    </div>
+                    <div class="weight-item">
+                        <label for="goals">Goals:</label>
+                        <input type="range" id="goals" class="weight-slider" min="0" max="100" value="15">
+                        <span class="weight-value" data-for="goals">15%</span>
+                    </div>
+                    <div class="weight-item">
+                        <label for="values">Values:</label>
+                        <input type="range" id="values" class="weight-slider" min="0" max="100" value="10">
+                        <span class="weight-value" data-for="values">10%</span>
+                    </div>
+                    <div class="total-weight">
+                        Total: <span id="totalWeight">100%</span>
+                    </div>
+                </div>
+                <div class="weight-chart">
+                    <canvas id="weightChart"></canvas>
+                </div>
+                <button id="saveWeights" class="btn">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Matrices Section -->
+        <div id="matrices" class="tab-content">
+            <div class="section">
+                <h2>Compatibility Matrices</h2>
+                <div class="matrix-types">
+                    <button class="matrix-tab active" data-matrix="occupation">Occupation</button>
+                    <button class="matrix-tab" data-matrix="interests">Interests</button>
+                    <button class="matrix-tab" data-matrix="lifestyle">Lifestyle</button>
+                    <button class="matrix-tab" data-matrix="goals">Goals</button>
+                    <button class="matrix-tab" data-matrix="values">Values</button>
+                </div>
+                <div id="matrixContainer" class="matrix-container">
+                    <!-- Matrix will be rendered here -->
+                </div>
+                <div class="matrix-heatmap">
+                    <canvas id="heatmapChart"></canvas>
+                </div>
+                <button id="saveMatrix" class="btn">Save Matrix</button>
+            </div>
+        </div>
+
+        <!-- Data Analysis Section -->
+        <div id="data" class="tab-content">
+            <div class="section">
+                <h2>Data Analysis</h2>
+                <div class="export-section">
+                    <h3>Export User Data</h3>
+                    <button id="exportCSV" class="btn">Export to CSV</button>
+                </div>
+                <div class="analysis-section">
+                    <h3>Matching Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="matchingChart"></canvas>
+                    </div>
+                    <div class="stats-container">
+                        <!-- Statistics will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Train Model Section -->
+        <div id="train" class="tab-content">
+            <div class="section">
+                <h2>Train Model</h2>
+                <div class="file-upload">
+                    <h3>Upload Training Data</h3>
+                    <div class="file-input-group">
+                        <label>Users Data (CSV):</label>
+                        <input type="file" id="usersData" accept=".csv">
+                        <span id="usersFileName">No file selected</span>
+                    </div>
+                    <div class="file-input-group">
+                        <label>Matches Data (CSV):</label>
+                        <input type="file" id="matchesData" accept=".csv">
+                        <span id="matchesFileName">No file selected</span>
+                    </div>
+                    <button id="clearFile">Clear Files</button>
+                    <p class="help-text">Upload users.csv and matches.csv files to train the model.</p>
+                </div>
+                
+                <div class="training-params">
+                    <h3>Training Parameters</h3>
+                    <div class="param-group">
+                        <label for="epochs">Epochs:</label>
+                        <input type="number" id="epochs" value="100" min="1">
+                    </div>
+                    <div class="param-group">
+                        <label for="learningRate">Learning Rate:</label>
+                        <input type="number" id="learningRate" value="0.001" min="0.0001" step="0.0001">
+                    </div>
+                    <div class="param-group">
+                        <label for="batchSize">Batch Size:</label>
+                        <input type="number" id="batchSize" value="32" min="1">
+                    </div>
+                </div>
+
+                <div class="training-controls">
+                    <button id="startTraining" disabled>Start Training</button>
+                </div>
+
+                <div class="training-progress">
+                    <h3>Training Progress</h3>
+                    <div class="progress-bar">
+                        <div id="trainingProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="metrics">
+                        <div class="metric">
+                            <label>Epoch:</label>
+                            <span id="currentEpoch">0</span>
+                        </div>
+                        <div class="metric">
+                            <label>Loss:</label>
+                            <span id="currentLoss">0</span>
+                        </div>
+                        <div class="metric">
+                            <label>Accuracy:</label>
+                            <span id="currentAccuracy">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="training-results">
+                    <h3>Training Results</h3>
+                    <div class="chart-container">
+                        <canvas id="trainingChart"></canvas>
+                    </div>
+                    <div class="optimized-weights">
+                        <h4>Optimized Weights</h4>
+                        <div id="optimizedWeights"></div>
+                        <button id="applyWeights" disabled>Apply Weights</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/constants.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/matrix.js"></script>
+    <script src="js/weights.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/analysis.js"></script>
+    <script src="js/train.js"></script>
+</body>
+</html>

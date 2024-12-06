@@ -7,63 +7,6 @@ let isLoadingMessages = false;
 let hasMoreMessages = true;
 let messageInterval = null;
 
-// Thêm emoji picker
-let emojiPicker = null;
-
-function initEmojiPicker() {
-    if (!customElements.get('emoji-picker')) {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/emoji-picker-element@1.18.3/index.min.js';
-        document.head.appendChild(script);
-
-        script.onload = () => {
-            createEmojiPicker();
-        };
-    } else {
-        createEmojiPicker();
-    }
-}
-
-function createEmojiPicker() {
-    emojiPicker = document.createElement('emoji-picker');
-    emojiPicker.classList.add('emoji-picker');
-    emojiPicker.style.display = 'none';
-    document.getElementById('chatControls').appendChild(emojiPicker);
-
-    emojiPicker.addEventListener('emoji-click', event => {
-        const messageInput = document.getElementById('messageInput');
-        messageInput.value += event.detail.unicode;
-        emojiPicker.style.display = 'none';
-    });
-}
-
-function toggleEmojiPicker() {
-    if (!emojiPicker) {
-        initEmojiPicker();
-        return;
-    }
-    emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
-}
-
-// Thêm nút emoji vào giao diện chat
-function addEmojiButton() {
-    const chatControls = document.getElementById('chatControls');
-    const emojiButton = document.createElement('button');
-    emojiButton.className = 'emoji-button';
-    emojiButton.innerHTML = '😊';
-    emojiButton.onclick = toggleEmojiPicker;
-    
-    // Chèn nút emoji trước nút gửi
-    const sendButton = chatControls.querySelector('button');
-    chatControls.insertBefore(emojiButton, sendButton);
-}
-
-// Khởi tạo emoji picker khi trang được load
-document.addEventListener('DOMContentLoaded', () => {
-    addEmojiButton();
-    initEmojiPicker();
-});
-
 async function loadMatches() {
     try {
         console.log('Loading matches...');
@@ -319,6 +262,161 @@ function viewProfile() {
     }
 }
 
+// Hàm xử lý modal địa điểm
+function showLocationModal() {
+    // Tạo modal nếu chưa có
+    let modal = document.getElementById('locationModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'locationModal';
+        modal.className = 'location-modal';
+        modal.innerHTML = `
+            <div class="location-modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Gợi ý địa điểm hẹn hò</h3>
+                <div id="mapContainer"></div>
+                <div id="locationAnalysis"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Xử lý đóng modal
+        const closeBtn = modal.querySelector('.close-modal');
+        closeBtn.onclick = () => modal.style.display = 'none';
+        
+        // Click ngoài modal để đóng
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Khởi tạo bản đồ
+        if (window.dateLocationSuggester) {
+            window.dateLocationSuggester.init();
+        }
+    }
+
+    modal.style.display = 'block';
+}
+
+function initChatControls() {
+    const chatControls = document.getElementById('chatControls');
+    if (!chatControls) return;
+
+    // Xóa các nút và container cũ
+    const oldElements = chatControls.querySelectorAll('.emoji-button, .location-button, .emoji-container');
+    oldElements.forEach(el => el.remove());
+
+    // Thêm nút emoji
+    const emojiButton = document.createElement('button');
+    emojiButton.className = 'emoji-button';
+    emojiButton.innerHTML = '😊';
+    emojiButton.onclick = (e) => {
+        e.preventDefault();
+        const emojiContainer = document.querySelector('.emoji-container');
+        if (emojiContainer) {
+            emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'flex' : 'none';
+        }
+    };
+
+    // Thêm container emoji
+    const emojiContainer = document.createElement('div');
+    emojiContainer.className = 'emoji-container';
+    emojiContainer.style.display = 'none';
+
+    // Thêm các emoji phổ biến
+    const commonEmojis = [
+        '😊', '😂', '🥰', '😍', '😘', '😭', '😅', '😉', '😎', '🥳',
+        '👍', '❤️', '😋', '🤗', '😴', '🤔', '😇', '😜', '😡', '😱',
+        '🎉', '✨', '💕', '💖', '💝', '💓', '💗', '💞', '💘', '💌'
+    ];
+
+    commonEmojis.forEach(emoji => {
+        const emojiSpan = document.createElement('span');
+        emojiSpan.className = 'emoji-item';
+        emojiSpan.textContent = emoji;
+        emojiSpan.onclick = () => {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value += emoji;
+            emojiContainer.style.display = 'none';
+        };
+        emojiContainer.appendChild(emojiSpan);
+    });
+
+    // Thêm nút địa điểm
+    const locationButton = document.createElement('button');
+    locationButton.className = 'location-button';
+    locationButton.innerHTML = '📍';
+    locationButton.onclick = (e) => {
+        e.preventDefault();
+        showLocationModal();
+    };
+
+    // Thêm các phần tử vào DOM
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput && messageInput.parentNode) {
+        messageInput.parentNode.insertBefore(emojiButton, messageInput);
+        messageInput.parentNode.insertBefore(locationButton, messageInput);
+        messageInput.parentNode.appendChild(emojiContainer);
+    }
+
+    // Đóng emoji picker khi click ra ngoài
+    document.addEventListener('click', (e) => {
+        if (!emojiContainer.contains(e.target) && !emojiButton.contains(e.target)) {
+            emojiContainer.style.display = 'none';
+        }
+    });
+}
+
+// Khởi tạo khi trang load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Chat page loaded');
+    initChatControls();
+    
+    // Load script dateLocation.js
+    const script = document.createElement('script');
+    script.src = '/CS3/client/src/js/dateLocation.js';
+    script.onload = () => {
+        console.log('DateLocation script loaded');
+    };
+    document.head.appendChild(script);
+});
+
+// Chỉ gọi initChatControls một lần khi trang được load
+document.addEventListener('DOMContentLoaded', initChatControls);
+
+// Không cần gọi lại initChatControls trong selectChatUser
+window.selectChatUser = function(user) {
+    currentChatUser = user;
+    currentPage = 1;
+    hasMoreMessages = true;
+    
+    document.getElementById('chatUserAvatar').src = user.avatar || DEFAULT_AVATAR;
+    document.getElementById('chatUserName').textContent = user.name;
+    
+    document.getElementById('userStatus').style.display = 'block';
+    document.getElementById('chatControls').style.display = 'flex';
+
+    document.querySelectorAll('.chat-user').forEach(el => {
+        el.classList.remove('active');
+        if (el.dataset.userId === user._id) {
+            el.classList.add('active');
+        }
+    });
+
+    loadMessages(user._id);
+
+    if (messageInterval) {
+        clearInterval(messageInterval);
+    }
+    messageInterval = setInterval(() => {
+        if (currentChatUser) {
+            loadMessages(currentChatUser._id);
+        }
+    }, 5000);
+};
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Chat page loaded');
@@ -374,60 +472,3 @@ async function startVideoCall() {
 window.startVideoCall = startVideoCall;
 window.sendMessage = sendMessage;
 window.viewProfile = viewProfile;
-
-// Thêm chức năng emoji
-function initEmojiPicker() {
-    // Tạo container cho emoji picker
-    const emojiContainer = document.createElement('div');
-    emojiContainer.className = 'emoji-container';
-    emojiContainer.style.display = 'none';
-
-    // Thêm các emoji phổ biến
-    const commonEmojis = [
-        '😊', '😂', '🥰', '😍', '😘', '😭', '😅', '😉', '😎', '🥳',
-        '👍', '❤️', '😋', '🤗', '😴', '🤔', '😇', '😜', '😡', '😱',
-        '🎉', '✨', '💕', '💖', '💝', '💓', '💗', '💞', '💘', '💌'
-    ];
-
-    commonEmojis.forEach(emoji => {
-        const emojiSpan = document.createElement('span');
-        emojiSpan.className = 'emoji-item';
-        emojiSpan.textContent = emoji;
-        emojiSpan.onclick = () => {
-            const messageInput = document.getElementById('messageInput');
-            messageInput.value += emoji;
-            emojiContainer.style.display = 'none';
-        };
-        emojiContainer.appendChild(emojiSpan);
-    });
-
-    // Thêm nút emoji
-    const emojiButton = document.createElement('button');
-    emojiButton.className = 'emoji-button';
-    emojiButton.innerHTML = '😊';
-    emojiButton.onclick = (e) => {
-        e.preventDefault();
-        emojiContainer.style.display = emojiContainer.style.display === 'none' ? 'flex' : 'none';
-    };
-
-    // Thêm vào DOM
-    const chatControls = document.getElementById('chatControls');
-    const messageInput = document.getElementById('messageInput');
-    
-    // Chèn nút emoji trước input
-    messageInput.parentNode.insertBefore(emojiButton, messageInput);
-    // Thêm container emoji sau input
-    messageInput.parentNode.appendChild(emojiContainer);
-
-    // Đóng emoji picker khi click ra ngoài
-    document.addEventListener('click', (e) => {
-        if (!emojiContainer.contains(e.target) && !emojiButton.contains(e.target)) {
-            emojiContainer.style.display = 'none';
-        }
-    });
-}
-
-// Khởi tạo emoji picker khi trang được load
-document.addEventListener('DOMContentLoaded', () => {
-    initEmojiPicker();
-});

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoạt động hằng ngày - Dating Web</title>
+    <link rel="stylesheet" href="../styles/common.css">
+    <link rel="stylesheet" href="../styles/daily-activities.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="home.html">Dating Web</a>
+        </div>
+        <div class="nav-links">
+            <a href="matching.html">
+                <i class="nav-icon">💘</i>
+                <span class="nav-text">Ghép cặp</span>
+            </a>
+            <a href="chat.html">
+                <i class="nav-icon">💬</i>
+                <span class="nav-text">Tin nhắn</span>
+            </a>
+            <a href="match-management.html">
+                <i class="nav-icon">👥</i>
+                <span class="nav-text">Bạn bè</span>
+            </a>
+            <a href="notifications.html">
+                <i class="nav-icon">🔔</i>
+                <span class="nav-text">Thông báo</span>
+            </a>
+            <a href="settings.html">
+                <i class="nav-icon">⚙️</i>
+                <span class="nav-text">Cài đặt</span>
+            </a>
+            <a href="#" id="logoutBtn">
+                <i class="nav-icon">🚪</i>
+                <span class="nav-text">Đăng xuất</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="activities-header">
+            <h1>Hoạt động hằng ngày</h1>
+            <div class="coin-balance">
+                <i class="coin-icon">🪙</i>
+                <span id="coin-balance">0</span> xu
+            </div>
+        </div>
+
+        <div class="activities-section">
+            <h2>Nhiệm vụ ngày</h2>
+            <div class="tasks-container" id="dailyTasks">
+                <div class="task-card">
+                    <div class="task-info">
+                        <h3>Đăng nhập hằng ngày</h3>
+                        <p>Nhận 3 xu mỗi ngày</p>
+                    </div>
+                    <button class="claim-reward" data-task="daily-login">Nhận thưởng</button>
+                </div>
+                <div class="task-card">
+                    <div class="task-info">
+                        <h3>Nhắn tin</h3>
+                        <p>Gửi 5 tin nhắn (3 xu)</p>
+                        <div class="progress-container">
+                            <span id="messages-count">0/5</span>
+                        </div>
+                    </div>
+                    <button class="claim-reward" data-task="messages">Nhận thưởng</button>
+                </div>
+                <div class="task-card">
+                    <div class="task-info">
+                        <h3>Ghé thăm hồ sơ</h3>
+                        <p>1 xu/hồ sơ (tối đa 5 xu)</p>
+                        <div class="progress-container">
+                            <span id="profile-visits-count">0</span>
+                        </div>
+                    </div>
+                    <button class="claim-reward" data-task="profile-visits">Nhận thưởng</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="activities-section">
+            <h2>Nhiệm vụ tuần</h2>
+            <div class="tasks-container" id="weeklyTasks">
+                <div class="task-card">
+                    <div class="task-info">
+                        <h3>Đổi ảnh hồ sơ</h3>
+                        <p>5 xu mỗi lần (tối đa 5 lần)</p>
+                        <div class="progress-container">
+                            <span id="avatar-changes-count">0</span>
+                        </div>
+                    </div>
+                    <button class="claim-reward" data-task="avatar-change">Nhận thưởng</button>
+                </div>
+                <div class="task-card">
+                    <div class="task-info">
+                        <h3>Hẹn hò</h3>
+                        <p>5 xu mỗi lần (tối đa 7 lần)</p>
+                        <div class="progress-container">
+                            <span id="dating-count">0</span>
+                        </div>
+                    </div>
+                    <button class="claim-reward" data-task="dating">Nhận thưởng</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="activities-section">
+            <h2>Đổi thưởng</h2>
+            <div class="rewards-container">
+                <div class="reward-card">
+                    <div class="reward-info">
+                        <h3>50.000 VNĐ</h3>
+                        <p>Đổi 300 xu</p>
+                    </div>
+                    <button class="exchange-reward" data-amount="50000" data-coins="300">Đổi thưởng</button>
+                </div>
+                <div class="reward-card">
+                    <div class="reward-info">
+                        <h3>100.000 VNĐ</h3>
+                        <p>Đổi 500 xu</p>
+                    </div>
+                    <button class="exchange-reward" data-amount="100000" data-coins="500">Đổi thưởng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/constants.js"></script>
+    <script src="../js/daily-activities.js"></script>
+    <script src="../js/common.js"></script>
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html> 

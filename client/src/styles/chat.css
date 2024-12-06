@@ -573,7 +573,7 @@
     z-index: 1001;
 }
 
-.emoji-button {
+.emoji-button, .location-button {
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -581,9 +581,10 @@
     padding: 5px;
     margin: 0 5px;
     transition: transform 0.2s;
+    color: var(--halloween-orange);
 }
 
-.emoji-button:hover {
+.emoji-button:hover, .location-button:hover {
     transform: scale(1.1);
 }
 
@@ -591,9 +592,10 @@
     position: absolute;
     bottom: 60px;
     left: 10px;
-    background: white;
+    background: var(--dark-background);
+    border: 1px solid var(--halloween-orange);
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(255, 107, 26, 0.2);
     padding: 10px;
     display: none;
     flex-wrap: wrap;
@@ -607,11 +609,32 @@
     cursor: pointer;
     padding: 5px;
     border-radius: 5px;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
 }
 
 .emoji-item:hover {
-    background-color: #f0f0f0;
+    transform: scale(1.2);
+    background: rgba(255, 107, 26, 0.1);
+}
+
+/* Đảm bảo chat controls có position relative */
+.chat-controls {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background: var(--dark-background);
+    border-top: 1px solid var(--halloween-orange);
+}
+
+.chat-input {
+    flex: 1;
+    margin: 0 10px;
+    padding: 8px 15px;
+    border: 1px solid var(--halloween-orange);
+    border-radius: 20px;
+    background: var(--dark-background);
+    color: white;
 }
 
 /* Responsive design */
@@ -623,6 +646,12 @@
     
     .emoji-item {
         font-size: 1.2rem;
+    }
+
+    .emoji-button, .location-button {
+        font-size: 1.3rem;
+        padding: 3px;
+        margin: 0 3px;
     }
 }
 
